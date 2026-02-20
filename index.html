@@ -1,14 +1,1422 @@
-<!doctype html>
-<html lang="en">
+
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where2Meet - 스마트 모임 조율</title>
+    <style>
+        /* =========================================================
+           [기존 코드 완벽 보존 구역] Design System & Common UI 
+           ========================================================= */
+        :root {
+            --bg-color: #f8f9fa; --card-bg: #ffffff; --header-bg: rgba(255, 255, 255, 0.85);
+            --text-color: #333333; --text-muted: #666666;
+            --primary: #6C5CE7; --secondary: #00CEC9; --accent: #FAB1A0;
+            --border: #DFE6E9; --shadow: 0 8px 24px rgba(108, 92, 231, 0.08);
+            --success: #00b894; --fire: #ff7675; --gold: #f1c40f;
+            --today-border: #6C5CE7; --chip-bg: #f1f3f5; --input-bg: #f1f3f5;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212; --card-bg: #1e1e1e; --header-bg: rgba(30, 30, 30, 0.85);
+            --text-color: #e0e0e0; --text-muted: #a0a0a0;
+            --primary: #8273f6; --secondary: #00e0db; --border: #333333;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.4); --today-border: #8273f6;
+            --chip-bg: #2d2d2d; --input-bg: #2a2a2a;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; overflow-x: hidden; transition: background-color 0.3s ease, color 0.3s ease; }
+        .container { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 1; padding-bottom: 50px; }
+        .bg-decoration { position: fixed; top: -150px; left: 50%; transform: translateX(-50%); width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(108,92,231,0.08) 0%, transparent 70%); z-index: -1; pointer-events: none; transition: opacity 0.3s ease; }
+        body.dark-mode .bg-decoration { opacity: 0.3; }
+
+        header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); background: var(--header-bg); height: 60px; box-sizing: border-box; transition: background-color 0.3s ease, border-color 0.3s ease; }
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color); padding: 0; display: flex; align-items: center; transition: transform 0.2s, color 0.3s ease; }
+        .back-btn:active { transform: scale(0.8); color: var(--primary); }
+        .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); cursor: pointer; letter-spacing: -0.5px; transition: color 0.3s ease;}
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .theme-toggle-btn { background: var(--chip-bg); border: 1px solid var(--border); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .theme-toggle-btn:active { transform: scale(0.9); }
+
+        .global-banner { position: sticky; top: 60px; z-index: 99; background: var(--chip-bg); border-bottom: 1px solid var(--border); padding: 10px 20px; font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; transition: all 0.3s ease; }
+        .global-banner::-webkit-scrollbar { display: none; }
+        .global-banner-item { display: flex; align-items: center; gap: 4px; }
+        .global-banner-item b { color: var(--primary); font-weight: 800; }
+
+        .screen { display: none; padding: 20px 24px; animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+        .screen.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .main-btn { width: 100%; padding: 18px; border: none; border-radius: 16px; font-size: 1.05rem; font-weight: 700; cursor: pointer; background: var(--primary); color: white; box-shadow: var(--shadow); transition: all 0.2s; }
+        .main-btn:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(108, 92, 231, 0.1); }
+        .link-copy-btn { width: 100%; padding: 14px; margin-top: 10px; margin-bottom: 20px; background: var(--card-bg); border: 1px dashed var(--primary); color: var(--primary); border-radius: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; }
+        .link-copy-btn:hover { background: var(--chip-bg); }
+
+        h2 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        h3 { font-size: 1.1rem; margin: 0 0 15px 0; font-weight: 700; }
+        p { color: var(--text-muted); transition: color 0.3s ease; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); transition: all 0.3s ease; }
+        label { display: block; margin: 16px 0 8px; font-weight: 700; font-size: 0.9rem; color: var(--text-color); transition: color 0.3s ease;}
+        input, select { width: 100%; padding: 15px; border: 1px solid var(--border); background: var(--input-bg); border-radius: 12px; font-size: 1rem; box-sizing: border-box; color: var(--text-color); transition: all 0.3s ease; margin-bottom: 4px; font-family: inherit; }
+        input:focus, select:focus { outline: none; background: var(--card-bg); border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15); }
+        .date-range-group { display: flex; gap: 8px; align-items: center; }
+
+        .policy-group { border-bottom: 1px dashed var(--border); padding-bottom: 15px; margin-bottom: 15px; transition: border-color 0.3s ease;}
+        .policy-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .policy-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .toggle-ui { width: 44px; height: 24px; background: var(--border); border-radius: 30px; position: relative; cursor: pointer; transition: 0.3s; }
+        .toggle-ui::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .toggle-active { background: var(--secondary) !important; }
+        .toggle-active::after { transform: translateX(20px); }
+        .policy-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, opacity 0.3s ease; opacity: 0; background: var(--chip-bg); border-radius: 10px; }
+        .policy-details.show { max-height: 200px; opacity: 1; margin-top: 10px; padding: 12px; }
+        
+        .tooltip-container { position: relative; display: inline-flex; cursor: help; margin-left: 6px; }
+        .tooltip-icon { font-size: 1rem; color: var(--secondary); font-weight: bold; }
+        .tooltip-box { visibility: hidden; position: absolute; background-color: var(--text-color); color: var(--bg-color); text-align: left; border-radius: 12px; padding: 14px; width: 260px; bottom: 140%; left: 50%; transform: translateX(-50%); opacity: 0; transition: 0.2s; z-index: 200; pointer-events: none; line-height: 1.4; font-size: 0.85rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .tooltip-container:hover .tooltip-box { visibility: visible; opacity: 1; bottom: 130%; }
+        .tooltip-box::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: var(--text-color) transparent transparent transparent; }
+        .tooltip-desc-sub { margin-top: 8px; color: var(--bg-color); font-size: 0.8rem; border-top: 1px dashed var(--border); padding-top: 8px; opacity: 0.8;}
+
+        .calendar-wrapper { margin-top: 12px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--card-bg); transition: all 0.3s ease;}
+        .week-header { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--chip-bg); padding: 10px 0; text-align: center; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); transition: all 0.3s ease;}
+        .week-day.sun { color: #e17055; } .week-day.sat { color: #0984e3; }
+        .week-day.fri { color: var(--fire); position: relative; }
+        .week-day.fri::after { content: '🔥'; font-size: 1.1rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.15; pointer-events: none; transition: all 0.3s ease;}
+        body.dark-mode .week-day.fri::after { opacity: 0.35; filter: drop-shadow(0 0 5px rgba(255, 118, 117, 0.8)); }
+        .date-grid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 6px; gap: 6px; }
+        .month-label { grid-column: 1 / -1; padding: 12px 8px 4px; font-weight: 800; font-size: 0.95rem; color: var(--text-color); border-bottom: 1px dashed var(--border); margin-bottom: 4px; transition: border-color 0.3s ease;}
+        .date-cell { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; border-radius: 10px; cursor: pointer; font-size: 0.9rem; font-weight: normal; padding-top: 6px; position: relative; transition: all 0.15s ease; border: 1px solid transparent;}
+        .date-cell:hover { background-color: var(--chip-bg); }
+        .date-cell:active { transform: scale(0.95); }
+        .date-cell.selected { background-color: var(--primary); color: white; font-weight: bold; box-shadow: 0 4px 10px rgba(108, 92, 231, 0.25); border-color: transparent;}
+        .date-cell.today { border: 2px solid var(--today-border); }
+        .mini-chip { width: 5px; height: 5px; background: rgba(0,0,0,0.2); border-radius: 50%; }
+        body.dark-mode .mini-chip { background: rgba(255,255,255,0.2); }
+        .date-cell.selected .mini-chip { background: rgba(255,255,255,0.8); }
+        .vote-dots { display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; margin-top: 4px; max-width: 80%; }
+
+        .participant-summary { overflow-x: auto; white-space: nowrap; padding-bottom: 8px; margin-bottom: 10px; }
+        .name-chip { display: inline-block; padding: 6px 14px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-right: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: all 0.3s ease;}
+        .rank-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border); margin-bottom: 8px; transition: all 0.3s ease;}
+        .rank-item.first { border: 2px solid var(--gold); background: rgba(241, 196, 15, 0.05); box-shadow: 0 4px 12px rgba(241, 196, 15, 0.12); }
+        .rank-count { background: var(--text-color); color: var(--bg-color); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; transition: all 0.3s ease;}
+        .rank-item.first .rank-count { background: var(--gold); color: #000; }
+
+        .map-placeholder { width: 100%; min-height: 140px; background: var(--chip-bg); border-radius: 14px; padding: 20px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px dashed var(--text-muted); transition: 0.3s; }
+        .algo-result-box { text-align: left; width: 100%; }
+        @keyframes pulse-highlight { 0% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(108, 92, 231, 0); } 100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0); } }
+        .flash-update { animation: pulse-highlight 1.2s ease-out; }
+
+        .detail-banner { background: var(--primary); color: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: var(--shadow); position: relative; overflow: hidden; transition: background-color 0.3s ease;}
+        .detail-banner::before { content:''; position:absolute; top:-50%; right:-20%; width:150px; height:150px; background:rgba(255,255,255,0.1); border-radius:50%; }
+        .progress-container { width: 100%; background: var(--border); border-radius: 10px; height: 8px; margin: 10px 0 20px 0; overflow: hidden; transition: background-color 0.3s ease;}
+        .progress-bar { height: 100%; background: var(--secondary); border-radius: 10px; width: 0%; transition: width 0.5s ease-out, background-color 0.3s ease; }
+        .time-group { display: flex; gap: 10px; align-items: center; }
+        .chip-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .pref-chip { padding: 8px 16px; background: var(--chip-bg); border: 1px solid var(--border); border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--text-color); cursor: pointer; transition: all 0.2s ease; }
+        .pref-chip:active { transform: scale(0.95); }
+        .pref-chip.selected { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2); }
+
+        .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .summary-item { font-size: 1.05rem; font-weight: 700; color: var(--text-color); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .summary-item:last-child { margin-bottom: 0; }
+        .summary-icon { font-size: 1.3rem; }
+        .summary-highlight { color: var(--primary); font-weight: 800; }
+        .summary-sub { font-size: 0.85rem; color: var(--text-muted); background: rgba(108,92,231,0.1); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-left: 8px;}
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--text-color); color: var(--bg-color); padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 600; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 999; box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center; }
+        .toast.show { opacity: 1; bottom: 40px; }
+        
+        .rest-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.3s ease; }
+        .rest-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .rest-name { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 1.1rem; font-weight: 800; color: var(--text-color); }
+        .rest-star { position: relative; color: var(--gold); font-weight: bold; font-size: 0.95rem; white-space: nowrap; margin-left: 5px; display: flex; align-items: center; }
+        .match-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; transition: all 0.3s; }
+        .match-badge.high-match { background: rgba(255, 118, 117, 0.15); color: var(--fire); }
+        .match-badge.good-match { background: rgba(108, 92, 231, 0.15); color: var(--primary); }
+        .rest-info { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; }
+        .rest-info a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        .rest-actions { display: flex; flex-direction: column; gap: 8px; }
+        .rest-actions-row { display: flex; gap: 8px; }
+        .btn-confirm { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+        .btn-confirm:active { transform: scale(0.98); }
+        .btn-reserve { flex: 1; background: var(--secondary); color: white; border: none; padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-reserve:active { transform: scale(0.95); }
+        .btn-review { flex: 1; background: var(--chip-bg); color: var(--text-color); border: 1px solid var(--border); padding: 10px; border-radius: 10px; font-weight: bold; cursor: pointer; text-decoration: none; text-align: center; font-size: 0.9rem; }
+        .btn-review:active { transform: scale(0.95); }
+        .explain-box { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; background: var(--chip-bg); padding: 12px; border-radius: 12px; line-height: 1.4; border: 1px dashed var(--border); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: flex-end; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 24px; box-sizing: border-box; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+        .modal-overlay.show .modal-content { transform: translateY(0); }
+        .resv-opt { display: block; width: 100%; padding: 16px; margin-bottom: 10px; border-radius: 14px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text-color); font-weight: 800; text-align: center; cursor: pointer; transition: all 0.2s; font-size: 1.05rem;}
+        .resv-opt:active { transform: scale(0.98); background: var(--border); }
+        .close-modal { width: 100%; padding: 14px; background: transparent; border: none; color: var(--text-muted); font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 1rem;}
+
+        .settle-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); transition: all 0.3s ease; }
+        .settle-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .settle-input-group { display: flex; align-items: center; gap: 10px; flex: 1; margin-left: 15px; }
+        .settle-input-group input { margin-bottom: 0; padding: 12px; font-weight: bold; font-size: 1.1rem; text-align: right; }
+        .settle-input-group span { font-weight: bold; color: var(--text-muted); white-space: nowrap; }
+        .settle-result { background: rgba(108, 92, 231, 0.05); padding: 12px; border-radius: 12px; text-align: right; font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .total-settle-box { background: var(--primary); color: white; padding: 20px; border-radius: 16px; text-align: center; margin-top: 10px; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2); }
+        .total-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px; }
+        .total-amount { font-size: 2.2rem; font-weight: 900; }
+
+        .arr-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .arr-table th, .arr-table td { padding: 12px 8px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .arr-table th { background: var(--chip-bg); color: var(--text-muted); font-weight: bold; border-radius: 8px 8px 0 0; }
+        .arr-btn { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); font-weight: bold; cursor: pointer; color: var(--text-color); transition: 0.2s; }
+        .arr-btn:active { transform: scale(0.95); }
+        .arr-btn.moving { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .arr-btn.arrived { background: var(--success); color: white; border-color: var(--success); }
+        .arr-btn.noshow-btn { color: var(--fire); font-size: 0.8rem; border: none; background: transparent; text-decoration: underline; padding: 4px; }
+        .timer-red { color: var(--fire); font-weight: 900; font-family: monospace; font-size: 1rem; }
+        .feed-box { background: var(--chip-bg); border-left: 4px solid var(--fire); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; line-height: 1.4; display: none; }
+        .feed-box.active { display: block; animation: fadeUp 0.3s; }
+
+        .receipt-card { background: var(--card-bg); border: 1px solid var(--primary); border-radius: 12px; padding: 15px; margin-top: 12px; box-shadow: 0 4px 12px rgba(108,92,231,0.08); }
+        .receipt-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 10px; margin-bottom: 10px; }
+        .receipt-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted); }
+        .receipt-row.total { font-weight: 900; font-size: 1.1rem; color: var(--primary); margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 10px; }
+        .receipt-plus { color: var(--fire); }
+        .receipt-minus { color: var(--secondary); }
+        .remove-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; text-decoration: underline; }
+
+        .pay-status-btn { width: 100%; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; text-align: center; margin-top: 10px; transition: 0.2s; border: none; }
+        .pay-status-pending { background: var(--chip-bg); color: var(--text-muted); border: 1px solid var(--border); }
+        .pay-status-sent { background: #ffeaa7; color: #d35400; }
+        .pay-status-confirmed { background: var(--success); color: white; }
+
+        /* =========================================================
+           [추가된 구역] 로그인 및 대시보드 확장 UI 스타일
+           ========================================================= */
+        .google-btn { width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: 16px; font-size: 1.05rem; font-weight: bold; cursor: pointer; background: var(--card-bg); color: var(--text-color); display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: var(--shadow); }
+        .google-btn:active { transform: scale(0.98); background: var(--chip-bg); }
+        .empty-state { text-align: center; padding: 40px 20px; background: var(--card-bg); border: 1px dashed var(--border); border-radius: 16px; color: var(--text-muted); margin-bottom: 20px;}
+        .skeleton-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); animation: pulse 1.5s infinite ease-in-out; }
+        .skeleton-title { width: 60%; height: 20px; background: var(--border); border-radius: 8px; margin-bottom: 10px; }
+        .skeleton-sub { width: 40%; height: 14px; background: var(--border); border-radius: 8px; }
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 0.3; } 100% { opacity: 0.6; } }
+        .meeting-list-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: var(--shadow); cursor: pointer; transition: 0.2s; }
+        .meeting-list-card:active { transform: scale(0.98); }
+    </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+
+<div class="bg-decoration"></div>
+
+<div class="container">
+    <header>
+        <div class="nav-left">
+            <button id="backBtn" class="back-btn" onclick="goBack()" style="display: none;">←</button>
+            <div class="logo" onclick="goHome()">Where2Meet</div>
+        </div>
+        <div class="nav-right">
+            <button class="theme-toggle-btn" onclick="toggleDarkMode()" id="themeToggleBtn" aria-label="테마 변경">🌙</button>
+            <button id="logoutBtn" style="display:none; background:transparent; border:none; color:var(--text-muted); font-size:0.8rem; font-weight:bold; cursor:pointer;" onclick="simulateLogout()">로그아웃</button>
+        </div>
+    </header>
+
+    <div id="scr-login" class="screen active">
+        <div style="text-align: center; padding: 80px 0;">
+            <h1 style="font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 10px;">Where2Meet</h1>
+            <p style="font-weight: 600; margin-bottom: 50px;">가장 친절한 모임의 시작</p>
+            <button class="google-btn" onclick="simulateLogin()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" style="width: 20px; height: 20px;">
+                Google 계정으로 시작하기
+            </button>
+        </div>
+    </div>
+
+    <div id="scr-dashboard" class="screen">
+        <button class="main-btn" onclick="showScr('scr-create')">➕ 새로운 모임 만들기</button>
+        
+        <h3 style="margin-top: 35px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+            🚀 진행 중인 모임
+        </h3>
+        
+        <div id="dashboardLoading">
+            <div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-sub"></div></div>
+            <div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-sub"></div></div>
+        </div>
+        
+        <div id="dashboardContent" style="display: none;">
+            </div>
+    </div>
+
+    <div id="globalSummaryBanner" class="global-banner" style="display: none;">
+        <div class="global-banner-item">📅 <b id="gbDate">미정</b></div>
+        <div class="global-banner-item">⏰ <b id="gbTime">미정</b></div>
+        <div class="global-banner-item">📍 <b id="gbLoc">미정</b></div>
+        <div class="global-banner-item">📝 <span id="gbName">미정</span></div>
+    </div>
+
+    <div id="scr-home" class="screen">
+        <div style="text-align: center; padding: 60px 0;">
+            <h1 style="font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 10px; transition: color 0.3s ease;">Where2Meet</h1>
+            <p style="font-weight: 600;">가장 친절한 모임의 시작</p>
+            <button class="main-btn" style="margin-top: 40px;" onclick="showScr('scr-create')">새로운 모임 만들기</button>
+        </div>
+    </div>
+
+    <div id="scr-create" class="screen">
+        <h2>모임 정책 설정</h2>
+        <label>모임 이름</label><input type="text" id="mName" placeholder="예: 연말 동기 모임">
+        <label>날짜 범위 선택</label>
+        <div class="date-range-group">
+            <input type="date" id="sDate"> <span style="font-weight:bold; color:var(--text-muted);">~</span> <input type="date" id="eDate">
+        </div>
+        
+        <div class="card" style="margin-top: 24px;">
+            <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 15px;">정책 설정</h3>
+            
+            <div class="policy-group">
+                <label style="margin: 0 0 8px 0;">투표 마감 및 시간</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="date" id="voteDeadline" style="flex: 2; margin:0;">
+                    <select id="voteDeadlineTime" style="flex: 1; margin:0;">
+                        <option value="12:00">오후 12시</option><option value="18:00">오후 6시</option><option value="20:00" selected>오후 8시</option><option value="23:59">자정</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="policy-group">
+                <div class="policy-header">
+                    <span style="font-weight: 700;">지각 벌금</span>
+                    <div class="toggle-ui toggle-active" id="t-penalty" onclick="togglePolicy('penalty')"></div>
+                </div>
+                <div id="detail-penalty" class="policy-details show">
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="penAmt" value="1000" step="1000" style="flex:1;">
+                        <select id="penTime" style="flex:1;"><option value="10">10분당</option><option value="30">30분당</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="policy-group">
+                <div class="policy-header">
+                    <span style="font-weight: 700; color: #000000;">노쇼(No-Show) 벌금</span>
+                    <div class="toggle-ui toggle-active" id="t-noshow" onclick="togglePolicy('noshow')"></div>
+                </div>
+                <div id="detail-noshow" class="policy-details show">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <input type="number" id="nsAmt" value="10000" step="5000" style="flex:1; margin-bottom:0;" placeholder="벌금 금액">
+                        <span style="font-weight:bold; color:var(--text-muted);">원</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="policy-group">
+                <div class="policy-header">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-weight: 700;">양보 포인트</span>
+                        <div class="tooltip-container">
+                            <span class="tooltip-icon">ⓘ</span>
+                            <div class="tooltip-box">
+                                <div style="font-weight:800; margin-bottom:6px; color:var(--secondary);">거리 비례 할인 및 부족분 분담 로직</div>
+                                모임 장소에서 가장 멀리서 오는 사람의 수고를 인정해주는 정책입니다. 최단 거리 거주자와의 거리 비례에 따라 정산 금액의 일정 %를 할인받으며, 해당 할인 금액은 가까운 멤버들이 나누어 부담합니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toggle-ui toggle-active" id="t-yield" onclick="togglePolicy('yield')"></div>
+                </div>
+                <div id="detail-yield" class="policy-details show">
+                    <div style="display:flex; align-items:center; position:relative;">
+                        <input type="number" id="yieldPct" value="10" oninput="updateTooltipVal(this.value)" style="padding-right:30px;">
+                        <span style="position:absolute; right:15px; font-weight:bold; color:var(--text-muted);">%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="policy-group" style="border:none; padding-bottom:0; margin-bottom:0;">
+                <div class="policy-header" style="margin:0;">
+                    <span style="font-weight: 700;">날짜 다중 선택 가능</span>
+                    <div class="toggle-ui toggle-active" id="t-multi" onclick="togglePolicy('multi')"></div>
+                </div>
+            </div>
+        </div>
+        <button class="main-btn" onclick="initMeeting()">모임 시작하기</button>
+    </div>
+
+    <div id="scr-vote" class="screen">
+        <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; margin-bottom: 12px;">
+            <h2 id="dashName" style="margin: 0; font-size: 1.6rem; color: white;">모임 이름</h2>
+            <p id="dashDate" style="font-size: 0.9rem; opacity: 0.9; margin-top: 6px; color: white;">기간 표시</p>
+        </div>
+        <div class="card" style="padding: 15px; margin-bottom: 12px;">
+            <div id="policyInfo" style="font-size: 0.85rem; line-height: 1.6;"></div>
+        </div>
+        <button class="link-copy-btn" onclick="copyLink()">🔗 초대 링크 복사하기</button>
+        <div class="card">
+            <h3>참여 정보 입력</h3>
+            <label>내 이름</label><input type="text" id="gNameInput">
+            <label>출발지</label><input type="text" id="gLocInput" placeholder="예: 강남역">
+            <label>복귀지 (선택)</label><input type="text" id="gReturnInput" placeholder="예: 서울역">
+            <label>교통수단</label>
+            <select id="gTransportInput">
+                <option value="public">🚌 대중교통 (지하철, 버스)</option><option value="car">🚗 자차 (택시)</option><option value="other">❓ 기타</option>
+            </select>
+            <label style="margin-top: 20px;">가능한 날짜 선택</label>
+            <div class="calendar-wrapper">
+                <div class="week-header"><div class="week-day sun">일</div> <div class="week-day">월</div> <div class="week-day">화</div> <div class="week-day">수</div> <div class="week-day">목</div> <div class="week-day fri">금</div> <div class="week-day sat">토</div></div>
+                <div id="calendarGrid" class="date-grid"></div>
+            </div>
+            <button class="main-btn" onclick="submitBaseVote()" style="margin-top: 24px;">투표하기</button>
+        </div>
+    </div>
+
+    <div id="scr-status" class="screen">
+        <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 1.3rem; margin-bottom: 8px;">👥 참여자 리스트 <span id="totalCount" style="color:var(--primary);">(0명)</span></h2>
+            <div id="summaryChips" class="participant-summary"></div>
+        </div>
+        <div class="card" id="mapCard">
+            <h3 style="margin-bottom: 10px;">📍 최적 중간 지점 <span id="bestLocName" style="color:var(--primary); font-size:1rem; float:right;">분석 중...</span></h3>
+            <div id="map" class="map-placeholder"><div id="algoContent" style="color:var(--text-muted); font-size:0.9rem;">데이터를 바탕으로 계산합니다.</div></div>
+        </div>
+        <div class="card">
+            <h3>🏆 날짜 투표 랭킹</h3><div id="rankingList" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <div id="detailVoteAction" style="display:none; text-align:center; margin-top:20px;">
+            <p style="font-size:0.85rem; margin-bottom:10px;">날짜가 정해졌다면 상세 시간을 조율하세요!</p>
+            <button class="main-btn" style="background:var(--secondary);" onclick="startDetailVote()">⏰ 1위 날짜로 상세 투표하기</button>
+        </div>
+    </div>
+
+    <div id="scr-detail-vote" class="screen">
+        <div class="detail-banner">
+            <div style="font-size: 0.9rem; opacity: 0.9;">확정된 모임 날짜와 위치</div>
+            <div id="confirmedDateDisplay" style="font-size: 1.8rem; font-weight: 900; margin-top: 5px;">00/00 (요일)</div>
+            <div id="confirmedLocDisplay" style="font-size: 1.1rem; font-weight: 700; margin-top: 5px; color: #ffeaa7;">📍 장소</div>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; color: var(--text-muted);">
+                <span>상세 투표 진행률</span><span id="progressText">0명 / 0명</span>
+            </div>
+            <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+        </div>
+        <div class="card">
+            <h3>⏰ 예상 도착 시간</h3>
+            <p style="font-size: 0.85rem; margin-top: -10px; margin-bottom: 15px;">모임 장소에 도착 가능한 시간 범위를 알려주세요.</p>
+            
+            <div class="time-group">
+                <div style="flex:1;">
+                    <label style="margin-top:0;">From</label>
+                    <select id="tTimeStart">
+                        <option value="11">오전 11시</option><option value="12">오후 12시</option><option value="13">오후 1시</option>
+                        <option value="14">오후 2시</option><option value="15">오후 3시</option><option value="16">오후 4시</option>
+                        <option value="17">오후 5시</option><option value="18" selected>오후 6시</option><option value="19">오후 7시</option>
+                        <option value="20">오후 8시</option><option value="21">오후 9시</option><option value="22">오후 10시</option>
+                        <option value="23">오후 11시</option>
+                    </select>
+                </div>
+                <div style="flex:1;">
+                    <label style="margin-top:0;">To</label>
+                    <select id="tTimeEnd">
+                        <option value="12">오후 12시</option><option value="13">오후 1시</option><option value="14">오후 2시</option>
+                        <option value="15">오후 3시</option><option value="16">오후 4시</option><option value="17">오후 5시</option>
+                        <option value="18">오후 6시</option><option value="19">오후 7시</option><option value="20">오후 8시</option>
+                        <option value="21" selected>오후 9시</option><option value="22">오후 10시</option><option value="23">오후 11시</option>
+                        <option value="24">자정 (12시)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>🍕 먹고 싶은 메뉴 (다중선택)</h3><div class="chip-group" id="menuChips"></div>
+            <h3 style="margin-top: 25px;">✨ 원하는 분위기 (다중선택)</h3><div class="chip-group" id="vibeChips"></div>
+        </div>
+        <button class="main-btn" onclick="submitDetailVote()">결과 확인 및 장소 확정</button>
+    </div>
+
+    <div id="scr-detail-result" class="screen">
+        <h2 style="text-align:center;">🎉 상세 조율 결과</h2>
+        <div class="summary-card">
+            <div class="summary-item"><span class="summary-icon">📅</span> 확정 날짜: <span id="resDate" class="summary-highlight" style="margin-left:5px;">...</span></div>
+            <div class="summary-item"><span class="summary-icon">📍</span> 확정 위치: <span id="resLoc" class="summary-highlight" style="margin-left:5px;">...</span></div>
+            <div class="summary-item" style="align-items:flex-start;"><span class="summary-icon">⏰</span> <div style="margin-left:5px;">최적 모임 시간: <span id="resOptimalTime" class="summary-highlight">분석 중...</span><div id="resTimeCount" class="summary-sub" style="margin-top:4px; margin-left:0;">0명이 이 시간에 모일 수 있어요!</div></div></div>
+        </div>
+        <div class="card">
+            <h3>🥇 취향 투표 결과 (Top 3)</h3>
+            <div style="margin-bottom: 15px;"><label>선호 메뉴</label><div id="resMenuRank" style="font-weight:bold; color:var(--primary);">결과 없음</div></div>
+            <div><label>원하는 분위기</label><div id="resVibeRank" style="font-weight:bold; color:var(--secondary);">결과 없음</div></div>
+        </div>
+        <div>
+            <h3 style="margin-top: 30px;">🍽️ AI 추천 식당 Top 5</h3>
+            <div class="explain-box">💡 멤버들이 선택한 <b>[선호 메뉴]</b>와 <b>[원하는 분위기]</b>를 바탕으로 분석한 결과입니다.</div>
+            <div id="aiRecList"></div>
+        </div>
+    </div>
+
+    <div id="scr-final-confirmed" class="screen">
+        <h2 style="text-align:center; color:var(--primary);">🎉 최종 모임 확정!</h2>
+        <div class="card" style="background: var(--primary); color: white; text-align:center; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:-30%; left:-10%; width:100px; height:100px; background:rgba(255,255,255,0.1); border-radius:50%;"></div>
+            <div style="position:absolute; bottom:-20%; right:-10%; width:120px; height:120px; background:rgba(255,255,255,0.1); border-radius:50%;"></div>
+            <div style="font-size:1.05rem; opacity:0.9; margin-bottom:10px;">우리의 모임 장소와 시간이 정해졌습니다</div>
+            <div style="font-size: 2rem; font-weight: 900; margin-bottom: 8px;" id="fcName">식당 이름</div>
+            <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; margin-bottom: 10px; font-size:0.95rem; display:inline-block;">📍 <span id="fcAddress">상세 주소</span></div><br>
+            <a id="fcMapLink" href="#" target="_blank" style="display:inline-block; padding: 10px 20px; background: white; color: var(--primary); text-decoration: none; border-radius: 20px; font-weight: 800; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; margin-bottom: 15px;">🗺️ 지도 보기</a>
+            <div style="font-size: 1.1rem; font-weight: 700; opacity: 0.95; margin-bottom: 4px;" id="fcDate">2026년 00월 00일</div>
+            <div style="font-size: 1.1rem; font-weight: 700; opacity: 0.95; margin-bottom: 15px; display:flex; justify-content:center; align-items:center; gap:8px;">
+                <span id="fcTime">오후 0:00</span>
+                <button onclick="editConfirmedTime()" style="background:rgba(255,255,255,0.2); border:none; border-radius:6px; color:white; padding:4px 8px; font-size:0.8rem; cursor:pointer;">✏️ 수정</button>
+            </div>
+            <div style="font-size: 0.9rem; font-weight: bold; background: rgba(0,0,0,0.2); display: inline-block; padding: 5px 12px; border-radius: 20px; margin-bottom: 5px;">
+                👥 예상 참여 인원: <span id="fcParticipantCount">0</span>명
+            </div>
+        </div>
+        <div class="card">
+            <h3>🔗 최종 결과 공유하기</h3>
+            <p style="font-size:0.85rem; margin-top:-10px;">이 페이지를 카톡으로 공유하여 멤버들에게 알리세요.</p>
+            <button class="link-copy-btn" onclick="copyFinalLink()">🔗 결과 링크 복사하기</button>
+        </div>
+        <div class="card">
+            <h3>⏰ 모임 리마인드 설정</h3>
+            <div class="reminder-group">
+                <select id="reminderPicker" style="flex: 2; margin-bottom: 0; font-weight: bold; background: var(--input-bg);">
+                    <option value="1h">1시간 전</option>
+                    <option value="1d" selected>하루 전</option>
+                </select>
+                <button class="main-btn" style="flex: 1; padding: 14px; margin: 0; background: var(--primary); font-size: 0.95rem;" onclick="showToast('알림 예약 완료')">알람 저장</button>
+            </div>
+        </div>
+        
+        <button class="main-btn" style="background:var(--text-color); margin-bottom: 10px;" onclick="showScr('scr-arrival')">🏃 실시간 도착 현황 보기</button>
+    </div>
+
+    <div id="scr-arrival" class="screen">
+        <h2 style="display: flex; justify-content: space-between; align-items: center;">
+            🏃 실시간 도착 현황
+            <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);" id="arrMeetingTimeDisplay"></span>
+        </h2>
+        <div id="noShowFeedContainer" class="feed-box"></div>
+        <div class="card" style="padding: 0; overflow: hidden;">
+            <table class="arr-table">
+                <thead><tr><th>이름</th><th>상태 조작</th><th>벌금 현황</th></tr></thead>
+                <tbody id="arrivalTableBody"></tbody>
+            </table>
+        </div>
+        <div class="explain-box" style="margin-top: 15px;">
+            💡 <b>지각 벌금 자동 반영 안내</b><br>
+            약속 시간을 기준으로 지각한 멤버에게는 사전에 설정한 분 단위 벌금이 자동 누적되어 추후 정산 영수증에 합산 청구됩니다.
+        </div>
+        <button class="main-btn" onclick="showScr('scr-settlement')">💸 정산 하러 가기</button>
+    </div>
+
+    <div id="scr-settlement" class="screen">
+        <h2 style="text-align: center;">💸 모임 정산하기</h2>
+        
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 style="margin-top:0;">💳 송금받을 계좌/링크 (호스트 전용)</h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <select id="hostBank" style="flex: 1; margin:0; padding:12px; font-size:0.9rem;">
+                    <option>카카오뱅크</option><option>토스뱅크</option><option>국민은행</option><option>신한은행</option><option>송금링크</option>
+                </select>
+                <input type="text" id="hostAccountInput" placeholder="계좌번호" value="" style="flex: 2; margin:0; padding:12px;">
+                <button onclick="copyHostAccount()" style="background:var(--chip-bg); border:1px solid var(--border); border-radius:10px; padding:12px; cursor:pointer; font-size:1.1rem;">📋</button>
+            </div>
+        </div>
+
+        <div style="display:none;">
+            <input type="text" id="r1Ppl" value="1"><input type="text" id="r2Ppl" value="1">
+            <span id="r1Per"></span><span id="r2Per"></span>
+        </div>
+
+        <div class="settle-card" id="round1Card">
+            <h3 style="margin-bottom: 15px;">1차 정산</h3>
+            <div class="settle-row">
+                <label style="margin:0; width: 60px;">결제 금액</label>
+                <div class="settle-input-group"><input type="text" inputmode="numeric" id="r1Amt" placeholder="0" oninput="formatNumberInput(this)"><span>원</span></div>
+            </div>
+            <div id="round1List" style="border-top: 1px dashed var(--border); padding-top: 10px;"></div>
+            <button onclick="addManualGuestToRound(1)" style="margin-top:8px; padding:6px 12px; font-size:0.8rem; border-radius:20px; border:1px solid var(--border); background:var(--card-bg); cursor:pointer;">+ 인원 추가</button>
+        </div>
+
+        <div class="settle-card" id="round2Card">
+            <h3 style="margin-bottom: 15px;">2차 정산</h3>
+            <div class="settle-row">
+                <label style="margin:0; width: 60px;">결제 금액</label>
+                <div class="settle-input-group"><input type="text" inputmode="numeric" id="r2Amt" placeholder="0" oninput="formatNumberInput(this)"><span>원</span></div>
+            </div>
+            <button onclick="copyRoundToRound(1, 2)" style="margin-bottom:8px; padding:6px 12px; font-size:0.8rem; border-radius:20px; border:1px solid var(--primary); color:var(--primary); background:rgba(108,92,231,0.1); cursor:pointer; font-weight:bold;">🔄 1차 참여자와 동일</button>
+            <div id="round2List" style="border-top: 1px dashed var(--border); padding-top: 10px;"></div>
+            <button onclick="addManualGuestToRound(2)" style="margin-top:8px; padding:6px 12px; font-size:0.8rem; border-radius:20px; border:1px solid var(--border); background:var(--card-bg); cursor:pointer;">+ 인원 추가</button>
+        </div>
+
+        <button class="main-btn" id="addRoundBtn" style="background:var(--chip-bg); color:var(--text-color); border:1px dashed var(--border); box-shadow:none; margin-bottom: 20px; font-size:0.95rem; padding: 12px;" onclick="addNewRound()">➕ 정산 차수 추가하기</button>
+
+        <div class="total-settle-box">
+            <div class="total-label">총 결제 금액</div>
+            <div class="total-amount" id="settleTotal">0원</div>
+        </div>
+        <button class="main-btn" style="margin-top: 20px;" onclick="copySettleLink()">🔗 정산 결과 공유하기</button>
+        <button class="main-btn" style="background:var(--text-color); margin-top:20px;" onclick="setupNextMeeting()">📅 다음 만남 설정하기</button>
+    </div>
+</div>
+
+<div id="reserveModal" class="modal-overlay" onclick="closeReserveModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; text-align:center;">예약 플랫폼 선택</h3>
+        <p style="text-align:center; font-size:0.85rem; margin-top:-10px; margin-bottom:20px;" id="modalRestName">식당 이름</p>
+        <button class="resv-opt" onclick="goToReservation('catchtable')" style="color: #ff3e3e;">🍽️ 캐치테이블 예약</button>
+        <button class="resv-opt" onclick="goToReservation('naver')" style="color: #03c75a;">🟢 네이버 예약</button>
+        <button class="resv-opt" onclick="goToReservation('kakao')" style="color: #FEE500; color: #000;">🟡 카카오 예약</button>
+        <button class="close-modal" onclick="closeReserveModal(event, true)">닫기</button>
+    </div>
+</div>
+
+<div id="noShowModal" class="modal-overlay" onclick="closeNoShowModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; color:var(--fire);">🚫 노쇼 사유 입력</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:-10px;">작성하신 사과는 참여자 피드에 공유됩니다.</p>
+        <textarea id="noShowReasonInput" style="width:100%; height:80px; padding:10px; border-radius:10px; border:1px solid var(--border); font-family:inherit; margin-bottom:10px;" placeholder="예: 미안해, 급한 야근이 생겨서 못 갈 것 같아ㅠㅠ"></textarea>
+        <button class="main-btn" style="background:var(--fire); margin:0;" onclick="submitNoShowReason()">확인 및 피드 전송</button>
+        <button class="close-modal" onclick="closeNoShowModal(event, true)">취소</button>
+    </div>
+</div>
+
+<div id="receiptModal" class="modal-overlay" onclick="closeReceiptModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 style="margin-top:0; border-bottom: 1px dashed var(--border); padding-bottom: 10px;" id="rmName">정산 내역</h3>
+        <div id="rmContent" style="margin-bottom: 20px;"></div>
+        <button class="pay-status-btn" id="rmStatusBtn" onclick="toggleReceiptStatus()">상태 변경</button>
+        <button class="close-modal" onclick="closeReceiptModal(event, true)">닫기</button>
+    </div>
+</div>
+
+<div id="toast" class="toast">알림</div>
+
+<script>
+    /* =========================================================
+       [Javascript Logic]
+       ========================================================= */
+    function formatAmPmHour(hourStr) {
+        if(!hourStr) return '';
+        let hour = parseInt(hourStr, 10);
+        const ampm = hour >= 12 && hour < 24 ? '오후' : '오전';
+        hour = hour % 12 || 12;
+        return `${ampm} ${hour}시`;
+    }
+    function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start);
+            if (progress < 1) window.requestAnimationFrame(step);
+            else obj.innerHTML = end; 
+        };
+        window.requestAnimationFrame(step);
+    }
+    function initTheme() {
+        const savedTheme = localStorage.getItem('w2m_theme');
+        if (savedTheme) { if (savedTheme === 'dark') document.body.classList.add('dark-mode'); } 
+        else { if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { document.body.classList.add('dark-mode'); } }
+        updateThemeIcon();
+    }
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('w2m_theme', isDark ? 'dark' : 'light');
+        updateThemeIcon();
+    }
+    function updateThemeIcon() {
+        const btn = document.getElementById('themeToggleBtn');
+        if(btn) btn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
+
+    let state = {
+        meeting: { name: '', start: '', end: '', deadline: '', multi: true, penalty: false, penAmt: 1000, yield: false, yieldPct: 10, confirmedDate: '', confirmedLoc: '', optimalTimeStr: '' },
+        guests: [], history: [], finalChoice: null
+    };
+
+    window.onload = () => {
+        initTheme(); 
+        setupChips();
+        checkUrlParams();
+    };
+
+    function saveState() { localStorage.setItem('w2m_state', JSON.stringify(state)); }
+
+    function checkUrlParams() {
+        // [수정됨] 로그인 모의 처리 (로컬 상태 연동)
+        const saved = localStorage.getItem('w2m_state');
+        const isLoggedIn = localStorage.getItem('w2m_auth');
+        
+        if (!isLoggedIn) {
+            showScr('scr-login');
+            return;
+        } else {
+            document.getElementById('logoutBtn').style.display = 'block';
+        }
+
+        if (saved) {
+            state = JSON.parse(saved);
+            if (state.meeting.name) {
+                renderDash();
+                if (state.guests.length > 0) autoUpdateRecommendation();
+            }
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get('mode');
+        
+        if(mode === 'join' && state.meeting.name) { showScr('scr-vote'); } 
+        else if (mode === 'final' && state.finalChoice) { renderFinalConfirmed(); showScr('scr-final-confirmed'); } 
+        else if (mode === 'arrival') { renderFinalConfirmed(); showScr('scr-arrival'); }
+        else if (mode === 'settle') { showScr('scr-settlement'); }
+        else { showScr('scr-dashboard'); } // 기본 진입은 대시보드
+    }
+
+    /* =========================================================
+       [추가된 구역] 로그인 및 대시보드 로직 (Mock)
+       ========================================================= */
+    function simulateLogin() {
+        localStorage.setItem('w2m_auth', 'true');
+        document.getElementById('logoutBtn').style.display = 'block';
+        showScr('scr-dashboard');
+    }
+
+    function simulateLogout() {
+        localStorage.removeItem('w2m_auth');
+        document.getElementById('logoutBtn').style.display = 'none';
+        showScr('scr-login');
+    }
+
+    function loadDashboardData() {
+        document.getElementById('dashboardLoading').style.display = 'block';
+        document.getElementById('dashboardContent').style.display = 'none';
+
+        // 1.5초 로딩 시뮬레이션
+        setTimeout(() => {
+            document.getElementById('dashboardLoading').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            
+            const contentDiv = document.getElementById('dashboardContent');
+            
+            // 데이터가 있는 경우 (로컬 상태 확인)
+            if (state.meeting && state.meeting.name) {
+                contentDiv.innerHTML = `
+                    <div class="meeting-list-card" onclick="resumeMeeting()">
+                        <div style="font-weight: 800; font-size: 1.1rem; margin-bottom: 6px;">${state.meeting.name}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">📅 ${state.meeting.start || '날짜 미정'} ~ ${state.meeting.end || ''}</div>
+                        <div style="display: inline-block; font-size: 0.75rem; padding: 4px 8px; background: rgba(108, 92, 231, 0.1); border-radius: 12px; color: var(--primary); font-weight: bold;">
+                            최근 단계: 이어서 진행하기
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Empty State
+                contentDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                        <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-color);">아직 참여 중인 모임이 없습니다.</div>
+                        <div style="font-size: 0.9rem;">새로운 모임을 만들어 친구들을 초대해보세요!</div>
+                    </div>
+                `;
+            }
+        }, 1000);
+    }
+
+    function resumeMeeting() {
+        if(state.finalChoice) showScr('scr-final-confirmed');
+        else if(state.guests.length > 0) showScr('scr-status');
+        else showScr('scr-vote');
+    }
+
+    /* --------------------------------------------------------- */
+
+    function setupChips() {
+        const rawMenus = ['한식', '일식', '중식', '양식', '고기/구이', '프렌치', '이탈리안', '이자카야', '태국/베트남식', '멕시칸', '해산물/회', '분식', '햄버거/피자', '닭발/곱창', '브런치', '디저트/카페', '와인바', '펍/포차'];
+        const rawVibes = ['미슐랭', '뷰가 좋은', '파인다이닝', 'TV에 나온', '프라이빗 룸', '주차가 편한', '역세권', '조용한', '조명 맛집', '활기찬', '인스타감성', '트렌디한', '노포 감성', '콜키지 프리', '반려동물 동반', '고급스러운', '넓은 단체석'];
+        rawMenus.sort((a,b) => a.localeCompare(b));
+        rawVibes.sort((a,b) => a.localeCompare(b));
+        document.getElementById('menuChips').innerHTML = rawMenus.map(m => `<div class="pref-chip" onclick="this.classList.toggle('selected')">${m}</div>`).join('');
+        document.getElementById('vibeChips').innerHTML = rawVibes.map(v => `<div class="pref-chip" onclick="this.classList.toggle('selected')">${v}</div>`).join('');
+    }
+
+    function showScr(id, isBack = false) {
+        const cur = document.querySelector('.screen.active');
+        if (!isBack && cur && cur.id !== id) state.history.push(cur.id);
+        
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo({ top:0, behavior:'smooth' });
+
+        const backBtn = document.getElementById('backBtn');
+        if(backBtn) {
+            // 로그인, 대시보드, 홈 화면에서는 백버튼 숨김
+            if (id === 'scr-login' || id === 'scr-dashboard' || id === 'scr-home') {
+                backBtn.style.display = 'none';
+            } else {
+                backBtn.style.display = 'flex';
+            }
+        }
+        
+        if(id === 'scr-login' || id === 'scr-dashboard') state.history = [];
+
+        if (id === 'scr-dashboard') loadDashboardData(); // 대시보드 로딩 트리거
+        if (id === 'scr-vote') restoreBaseVote();
+        if (id === 'scr-status') autoUpdateRecommendation();
+        if (id === 'scr-detail-vote') renderDetailVoteSetup();
+        if (id === 'scr-detail-result') calculateDetailResults();
+        if (id === 'scr-final-confirmed') renderFinalConfirmed();
+        if (id === 'scr-arrival') initArrivalTracker();
+        if (id === 'scr-settlement') calcSettlement();
+    }
+    
+    function goBack() { 
+        if (state.history.length > 0) showScr(state.history.pop(), true); 
+        else showScr('scr-dashboard', true); 
+    }
+    function goHome() { showScr('scr-dashboard'); }
+    function showToast(msg) { const toast = document.getElementById('toast'); toast.innerText = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+    function copyLink() { const url = new URL(window.location.href); url.searchParams.set('mode', 'join'); navigator.clipboard.writeText(url.toString()).then(() => showToast('🔗 모임 링크가 복사되었습니다!')); }
+    function copyFinalLink() { 
+        const url = new URL(window.location.href); 
+        url.searchParams.set('mode', 'arrival');
+        navigator.clipboard.writeText(url.toString()).then(() => showToast('🔗 실시간 도착 현황 링크가 복사되었습니다!')); 
+    }
+    function updateTooltipVal(v) { const t = document.getElementById('toolTipVal'); if(t) t.innerText=v; }
+    function togglePolicy(id) { const el = document.getElementById(`t-${id}`); el.classList.toggle('toggle-active'); const detail = document.getElementById(`detail-${id}`); if(detail) detail.classList.toggle('show', el.classList.contains('toggle-active')); }
+
+    function initMeeting() {
+        const name = document.getElementById('mName').value;
+        const s = document.getElementById('sDate').value;
+        const e = document.getElementById('eDate').value;
+        if(!name || !s || !e) return showToast('필수 정보를 입력해주세요.');
+
+        state.meeting = {
+            name, start: s, end: e,
+            deadline: document.getElementById('voteDeadline').value + ' ' + document.getElementById('voteDeadlineTime').value,
+            multi: document.getElementById('t-multi').classList.contains('toggle-active'),
+            penalty: document.getElementById('t-penalty').classList.contains('toggle-active'),
+            penAmt: document.getElementById('penAmt').value,
+            yield: document.getElementById('t-yield').classList.contains('toggle-active'),
+            yieldPct: document.getElementById('yieldPct').value,
+            confirmedDate: '', confirmedLoc: '', optimalTimeStr: ''
+        };
+        state.meeting.noshow = document.getElementById('t-noshow') ? document.getElementById('t-noshow').classList.contains('toggle-active') : true;
+        state.meeting.nsAmt = document.getElementById('nsAmt') ? parseInt(document.getElementById('nsAmt').value) : 10000;
+
+        state.guests = [];
+        state.finalChoice = null;
+        localStorage.removeItem('w2m_me');
+        saveState();
+        renderDash();
+        showScr('scr-vote');
+    }
+    
+    function renderDash() {
+        document.getElementById('dashName').innerText = state.meeting.name;
+        document.getElementById('dashDate').innerText = `${state.meeting.start} ~ ${state.meeting.end}`;
+        let pText = `<b>[설정된 규칙]</b><br>`;
+        pText += `📅 날짜 선택: <b>${state.meeting.multi ? '다중 선택' : '1개만 선택'}</b><br>`;
+        
+        const penaltyTime = document.getElementById('penTime') ? document.getElementById('penTime').value : 10;
+        if(state.meeting.penalty) pText += `⏱️ 지각비: <b>${Number(state.meeting.penAmt).toLocaleString()}원 / ${penaltyTime}분당</b><br>`;
+        if(state.meeting.noshow) pText += `🚫 노쇼 벌금: <b>${Number(state.meeting.nsAmt).toLocaleString()}원</b><br>`;
+        if(state.meeting.yield) pText += `🤝 양보 할인: <b>최대 ${state.meeting.yieldPct}%</b><br>`;
+        
+        if(state.meeting.deadline && state.meeting.deadline.trim().length > 5) { pText += `⏳ 투표 마감: <b>${state.meeting.deadline}</b>`; }
+        document.getElementById('policyInfo').innerHTML = pText;
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const container = document.getElementById('calendarGrid');
+        container.innerHTML = '';
+        let cur = new Date(state.meeting.start);
+        const end = new Date(state.meeting.end);
+        let curMonth = -1;
+        const vMap = {};
+        state.guests.forEach(g => g.dates?.forEach(d => vMap[d] = (vMap[d]||0)+1));
+
+        while(cur <= end) {
+            const dStr = cur.toISOString().split('T')[0];
+            const m = cur.getMonth();
+            if(m !== curMonth) {
+                container.innerHTML += `<div class="month-label">${cur.getFullYear()}년 ${m+1}월</div>`;
+                for(let i=0; i<cur.getDay(); i++) container.innerHTML += `<div class="date-cell empty"></div>`;
+                curMonth = m;
+            }
+            let dots = '';
+            for(let i=0; i<(vMap[dStr]||0); i++) dots += `<div class="mini-chip"></div>`;
+            const isToday = dStr === new Date().toISOString().split('T')[0];
+            container.innerHTML += `
+                <div class="date-cell ${isToday ? 'today' : ''}" data-date="${dStr}" onclick="clickDate(this)">
+                    <div style="font-weight:normal; font-size:1rem;">${cur.getDate()}</div>
+                    <div class="vote-dots">${dots}</div>
+                </div>
+            `;
+            cur.setDate(cur.getDate() + 1);
+        }
+    }
+
+    function clickDate(el) {
+        if (!state.meeting.multi) { document.querySelectorAll('.date-cell.selected').forEach(c => c.classList.remove('selected')); el.classList.add('selected'); } 
+        else { el.classList.toggle('selected'); }
+    }
+
+    function restoreBaseVote() {
+        const me = localStorage.getItem('w2m_me');
+        if(!me) return;
+        const g = state.guests.find(x => x.name === me);
+        if(g) {
+            document.getElementById('gNameInput').value = g.name;
+            document.getElementById('gLocInput').value = g.loc;
+            document.getElementById('gReturnInput').value = g.ret || '';
+            document.getElementById('gTransportInput').value = g.transport || 'public';
+            document.querySelectorAll('.date-cell').forEach(c => {
+                if(g.dates?.includes(c.getAttribute('data-date'))) c.classList.add('selected');
+                else c.classList.remove('selected');
+            });
+        }
+    }
+
+    function submitBaseVote() {
+        const name = document.getElementById('gNameInput').value.trim();
+        const loc = document.getElementById('gLocInput').value.trim();
+        const ret = document.getElementById('gReturnInput').value.trim();
+        const transport = document.getElementById('gTransportInput').value;
+        const dates = Array.from(document.querySelectorAll('.date-cell.selected')).map(el => el.getAttribute('data-date'));
+
+        if(!name || !loc || dates.length===0) return showToast('이름, 출발지, 날짜를 확인해주세요.');
+
+        const idx = state.guests.findIndex(x => x.name === name);
+        const newData = { name, loc, ret, transport, dates, timeStart:'', timeEnd:'', menus:[], vibes:[] };
+        newData.dist = Math.floor(Math.random() * 30) + 5;
+        newData.arrivalStatus = 'pending';
+        newData.lateMinutes = 0;
+        newData.payStatus = 'pending';
+
+        if(idx !== -1) state.guests[idx] = { ...state.guests[idx], ...newData };
+        else state.guests.push(newData);
+
+        localStorage.setItem('w2m_me', name);
+        saveState();
+        renderCalendar();
+        showScr('scr-status');
+    }
+
+    const mockRoute = () => new Promise(res => setTimeout(() => res(Math.floor(Math.random()*40)+20), 20));
+    async function autoUpdateRecommendation() {
+        document.getElementById('totalCount').innerText = `(${state.guests.length}명)`;
+        document.getElementById('summaryChips').innerHTML = state.guests.map(g => `<span class="name-chip">${g.name}</span>`).join('');
+        let vMap = {};
+        state.guests.forEach(g => g.dates?.forEach(d => vMap[d] = (vMap[d]||0)+1));
+        const ranks = Object.entries(vMap).sort((a,b) => b[1]-a[1]);
+        const rList = document.getElementById('rankingList');
+        rList.innerHTML = ranks.slice(0,3).map((r,i) => `
+            <div class="rank-item ${i===0?'first':''}">
+                <div><span style="font-size:1.2rem; margin-right:8px;">${i===0?'🥇':i===1?'🥈':'🥉'}</span> <b style="color:var(--text-color);">${r[0].substring(5).replace('-','/')}</b></div>
+                <div class="rank-count">${r[1]}명</div>
+            </div>
+        `).join('');
+        if (ranks.length > 0) { document.getElementById('detailVoteAction').style.display = 'block'; state.meeting.confirmedDate = ranks[0][0]; }
+        if(state.guests.length === 0) return;
+        document.getElementById('bestLocName').innerText = "분석 중...";
+        const cands = ["강남역", "홍대입구", "종로3가", "잠실", "사당"];
+        let best = null, minScore = Infinity;
+        for (const loc of cands) {
+            let tSum = 0, maxT = 0;
+            for (const g of state.guests) { const t = await mockRoute(); const total = t * 2; tSum += total; if(total > maxT) maxT = total; }
+            const score = tSum + (maxT * 1.5);
+            if(score < minScore) { minScore = score; best = { loc, tSum, maxT }; }
+        }
+        state.meeting.confirmedLoc = best.loc;
+        saveState();
+        document.getElementById('bestLocName').innerText = best.loc;
+        document.getElementById('algoContent').innerHTML = `
+            <div class="algo-result-box">
+                <div style="font-weight:bold; color:var(--text-muted); margin-bottom:5px;">총 소요시간: ${best.tSum}분 | 최대 소요: ${best.maxT}분</div>
+                <div style="font-size:0.85rem; color:var(--primary); background:rgba(108,92,231,0.1); padding:8px; border-radius:8px;">
+                    💡 모든 인원의 이동 효율이 가장 좋고, 편차가 적은 공평한 장소입니다.
+                </div>
+            </div>
+        `;
+        const mc = document.getElementById('mapCard');
+        mc.classList.remove('flash-update'); void mc.offsetWidth; mc.classList.add('flash-update');
+    }
+    
+    function startDetailVote() { showScr('scr-detail-vote'); }
+
+    function renderDetailVoteSetup() {
+        if(state.meeting.confirmedDate) {
+            const dArr = state.meeting.confirmedDate.split('-');
+            document.getElementById('confirmedDateDisplay').innerText = `${dArr[1]}/${dArr[2]} 확정!`;
+        }
+        document.getElementById('confirmedLocDisplay').innerText = `📍 장소: ${state.meeting.confirmedLoc || '분석 중'}`;
+        const voted = state.guests.filter(g => g.timeStart && g.timeEnd).length;
+        const total = state.guests.length || 1;
+        document.getElementById('progressText').innerText = `${voted}명 / ${total}명 완료`;
+        document.getElementById('progressBar').style.width = `${(voted/total)*100}%`;
+
+        const me = localStorage.getItem('w2m_me');
+        if(me) {
+            const g = state.guests.find(x => x.name === me);
+            if(g && g.timeStart) {
+                document.getElementById('tTimeStart').value = g.timeStart;
+                document.getElementById('tTimeEnd').value = g.timeEnd;
+                document.querySelectorAll('#menuChips .pref-chip').forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('#menuChips .pref-chip').forEach(c => {
+                    if((g.menus||[]).includes(c.innerText)) c.classList.add('selected');
+                });
+                document.querySelectorAll('#vibeChips .pref-chip').forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('#vibeChips .pref-chip').forEach(c => {
+                    if((g.vibes||[]).includes(c.innerText)) c.classList.add('selected');
+                });
+            }
+        }
+    }
+
+    function submitDetailVote() {
+        const me = localStorage.getItem('w2m_me');
+        if(!me) return showToast('기본 투표를 먼저 진행해주세요.');
+        const timeStart = document.getElementById('tTimeStart').value;
+        const timeEnd = document.getElementById('tTimeEnd').value;
+        if (parseInt(timeStart) >= parseInt(timeEnd)) { return showToast('종료 시간은 시작 시간보다 늦어야 합니다.'); }
+
+        const menus = Array.from(document.querySelectorAll('#menuChips .pref-chip.selected')).map(c => c.innerText);
+        const vibes = Array.from(document.querySelectorAll('#vibeChips .pref-chip.selected')).map(c => c.innerText);
+
+        const idx = state.guests.findIndex(x => x.name === me);
+        if(idx !== -1) {
+            state.guests[idx].timeStart = timeStart;
+            state.guests[idx].timeEnd = timeEnd;
+            state.guests[idx].menus = menus;
+            state.guests[idx].vibes = vibes;
+            saveState();
+            showScr('scr-detail-result');
+        }
+    }
+
+    const mockRestaurants = [
+        { name: "비스트로 디종", star: 4.8, operatingHours: "11:30 - 22:00", regularHoliday: "매주 월요일", phone: "02-123-4567", tags: ['양식', '프렌치', '조용한', '미슐랭', '와인바', '프라이빗 룸'], address: "서울 강남구 테헤란로 123 1층", mapLink: "https://map.kakao.com" },
+        { name: "스시 오마카세", star: 4.7, operatingHours: "12:00 - 21:30", regularHoliday: "매주 일요일", phone: "02-234-5678", tags: ['일식', '해산물/회', '조용한', '프라이빗 룸', '미슐랭', '주차가 편한'], address: "서울 강남구 역삼로 456 2층", mapLink: "https://map.kakao.com" },
+        { name: "트라토리아 미아", star: 4.6, operatingHours: "11:00 - 23:00", regularHoliday: "연중무휴", phone: "02-345-6789", tags: ['양식', '이탈리안', '인스타감성', '와인바', '뷰가 좋은'], address: "서울 마포구 양화로 78 3층", mapLink: "https://map.kakao.com" },
+        { name: "프라이빗 한우 다이닝", star: 4.9, operatingHours: "17:00 - 24:00", regularHoliday: "매주 화요일", phone: "02-456-7890", tags: ['고기/구이', '한식', '프라이빗 룸', '주차가 편한', '미슐랭', '콜키지 프리'], address: "서울 서초구 강남대로 100", mapLink: "https://map.kakao.com" },
+        { name: "뷰포인트 와인바", star: 4.5, operatingHours: "18:00 - 01:00", regularHoliday: "연중무휴", phone: "02-567-8901", tags: ['와인바', '양식', '뷰가 좋은', '인스타감성', '고급스러운', '디저트/카페', '역세권'], address: "서울 송파구 올림픽로 300 최상층", mapLink: "https://map.kakao.com" }
+    ];
+
+    function calculateDetailResults() {
+        const voters = state.guests.filter(g => g.timeStart && g.timeEnd);
+        if(voters.length === 0) return;
+        const timeline = new Array(25).fill(0);
+        voters.forEach(g => {
+            let s = parseInt(g.timeStart, 10);
+            let e = parseInt(g.timeEnd, 10);
+            if(s < e) { for(let i=s; i<e; i++) timeline[i]++; }
+        });
+        const maxVotes = Math.max(...timeline);
+        let bestIntervals = [];
+        let inInterval = false;
+        let startH = 0;
+        for(let i=0; i<=24; i++) {
+            if(timeline[i] === maxVotes && !inInterval) { startH = i; inInterval = true; } 
+            else if (timeline[i] !== maxVotes && inInterval) { bestIntervals.push(`${formatAmPmHour(startH)} ~ ${formatAmPmHour(i)}`); inInterval = false; }
+        }
+        if (maxVotes > 0 && bestIntervals.length > 0) {
+            document.getElementById('resOptimalTime').innerText = bestIntervals.join(', ');
+            document.getElementById('resTimeCount').innerText = `가장 많은 ${maxVotes}명이 겹치는 시간입니다.`;
+            state.meeting.optimalTimeStr = bestIntervals.join(', ');
+        } else {
+            document.getElementById('resOptimalTime').innerText = `없음`;
+            document.getElementById('resTimeCount').innerText = `0명 찬성`;
+            state.meeting.optimalTimeStr = "미정";
+        }
+        if(state.meeting.confirmedDate) {
+            const dArr = state.meeting.confirmedDate.split('-');
+            document.getElementById('resDate').innerText = `${dArr[0]}년 ${dArr[1]}월 ${dArr[2]}일`;
+        }
+        document.getElementById('resLoc').innerText = state.meeting.confirmedLoc || '미정';
+
+        const allMenus = []; const allVibes = [];
+        voters.forEach(g => { if(g.menus) allMenus.push(...g.menus); if(g.vibes) allVibes.push(...g.vibes); });
+        
+        const menuCounts = {}; allMenus.forEach(m => menuCounts[m] = (menuCounts[m]||0)+1);
+        const mRanks = Object.entries(menuCounts).sort((a,b)=>b[1]-a[1]);
+        document.getElementById('resMenuRank').innerText = mRanks.slice(0,3).map(r=>`${r[0]}(${r[1]}표)`).join(', ') || '투표 없음';
+        
+        const vibeCounts = {}; allVibes.forEach(v => vibeCounts[v] = (vibeCounts[v]||0)+1);
+        const vRanks = Object.entries(vibeCounts).sort((a,b)=>b[1]-a[1]);
+        document.getElementById('resVibeRank').innerText = vRanks.slice(0,3).map(r=>`${r[0]}(${r[1]}표)`).join(', ') || '투표 없음'; 
+
+        const uniqueGroupPrefs = [...new Set([...allMenus, ...allVibes])];
+        renderRestaurantList(uniqueGroupPrefs);
+    }
+
+    function renderRestaurantList(groupPrefs) {
+        const listDiv = document.getElementById('aiRecList');
+        if(!listDiv) return;
+
+        const scoredRests = mockRestaurants.map(r => {
+            let matchCount = 0;
+            r.tags.forEach(t => { if (groupPrefs.includes(t)) matchCount++; });
+            const ratio = groupPrefs.length > 0 ? matchCount / groupPrefs.length : 0;
+            const matchRate = Math.round(70 + (Math.min(ratio, 1) * 30));
+            return { ...r, matchRate };
+        }).sort((a, b) => b.matchRate - a.matchRate);
+
+        listDiv.innerHTML = scoredRests.map((r, index) => {
+            const searchUrl = `https://search.naver.com/search.naver?query=${encodeURIComponent(r.name)}`;
+            const badgeClass = r.matchRate >= 90 ? 'high-match' : 'good-match';
+            return `
+                <div class="rest-card">
+                    <div class="rest-header">
+                        <div class="rest-name">
+                            ${index + 1}. ${r.name}
+                            <span class="match-badge ${badgeClass}">내 취향과 <span class="counter" data-target="${r.matchRate}">70</span>% 일치</span>
+                        </div>
+                        <div class="rest-star">★ ${r.star}</div>
+                    </div>
+                    <div class="rest-info">
+                        <div style="margin-bottom:6px; font-size:0.75rem; color:var(--primary); font-weight:600;">#${r.tags.join(' #')}</div>
+                        🕒 영업시간: ${r.operatingHours} (정기휴무: ${r.regularHoliday})<br>
+                        📞 전화번호: <a href="tel:${r.phone.replace(/-/g, '')}">${r.phone}</a>
+                    </div>
+                    <div class="rest-actions">
+                        <button class="btn-confirm" onclick="confirmRestaurant('${r.name}')">이 식당으로 확정하기</button>
+                    </div>
+                    <div class="rest-actions-row" style="margin-top:8px;">
+                        <button class="btn-reserve" onclick="openReserveModal('${r.name}')">예약하기</button>
+                        <a href="${searchUrl}" target="_blank" class="btn-review">리뷰/블로그 보기</a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        setTimeout(() => { document.querySelectorAll('.counter').forEach(el => { animateValue(el, 70, parseInt(el.getAttribute('data-target')), 1000); }); }, 100);
+    }
+
+    function confirmRestaurant(restName) {
+        const r = mockRestaurants.find(x => x.name === restName);
+        if(!r) return;
+        state.finalChoice = { name: r.name, address: r.address, mapLink: r.mapLink, time: state.meeting.optimalTimeStr || "시간 미정" };
+        saveState();
+        renderFinalConfirmed();
+        showScr('scr-final-confirmed');
+    }
+
+    function renderFinalConfirmed() {
+        if(!state.finalChoice) return;
+        if(state.meeting.confirmedDate) {
+            const dArr = state.meeting.confirmedDate.split('-');
+            document.getElementById('fcDate').innerText = `${dArr[0]}년 ${dArr[1]}월 ${dArr[2]}일`;
+        }
+        
+        let displayTime = "시간 미정";
+        if(state.finalChoice.time && state.finalChoice.time !== "미정" && state.finalChoice.time !== "시간 미정") {
+            displayTime = state.finalChoice.time.split('~')[0].trim().replace('시', ':00');
+        }
+        document.getElementById('fcTime').innerText = displayTime;
+        document.getElementById('fcName').innerText = state.finalChoice.name;
+        document.getElementById('fcAddress').innerText = state.finalChoice.address;
+        document.getElementById('fcMapLink').href = state.finalChoice.mapLink;
+        
+        const activeGuests = state.guests.filter(g => g.arrivalStatus !== 'noshow').length;
+        document.getElementById('fcParticipantCount').innerText = activeGuests;
+    }
+
+    function editConfirmedTime() {
+        const newTime = prompt("변경할 시간을 입력하세요 (예: 오후 7:30)", document.getElementById('fcTime').innerText);
+        if(newTime) {
+            document.getElementById('fcTime').innerText = newTime;
+            state.finalChoice.time = newTime;
+            saveState();
+        }
+    }
+
+    function openReserveModal(restName) {
+        document.getElementById('modalRestName').innerText = restName;
+        document.getElementById('reserveModal').classList.add('show');
+    }
+    function closeReserveModal(e, force = false) {
+        if (force || e.target.id === 'reserveModal') {
+            document.getElementById('reserveModal').classList.remove('show');
+        }
+    }
+    function goToReservation(platform) {
+        const restName = document.getElementById('modalRestName').innerText;
+        const urls = {
+            'catchtable': `https://app.catchtable.co.kr/search?keyword=${encodeURIComponent(restName)}`,
+            'naver': `https://map.naver.com/v5/search/${encodeURIComponent(restName)}`,
+            'kakao': `https://map.kakao.com/link/search/${encodeURIComponent(restName)}`
+        };
+        window.open(urls[platform], '_blank');
+        closeReserveModal(null, true);
+    }
+
+    let arrivalTimer = null;
+    let mockMeetingStartStr = null;
+
+    function initArrivalTracker() {
+        if (!mockMeetingStartStr) {
+            const d = new Date(); d.setMinutes(d.getMinutes() - 5);
+            document.getElementById('arrMeetingTimeDisplay').innerText = `약속시간: ${formatAmPmHour(d.getHours())} ${d.getMinutes()}분`;
+            mockMeetingStartStr = d.getTime();
+        }
+        if (arrivalTimer) clearInterval(arrivalTimer);
+        arrivalTimer = setInterval(updateArrivalLogic, 60000);
+        updateArrivalLogic(); 
+    }
+
+    function updateArrivalLogic() {
+        const now = Date.now();
+        const diffMinutes = Math.floor((now - mockMeetingStartStr) / 60000);
+        state.guests.forEach(g => {
+            if (g.arrivalStatus !== 'arrived' && g.arrivalStatus !== 'noshow') { g.lateMinutes = diffMinutes > 0 ? diffMinutes : 0; }
+        });
+        saveState();
+        renderArrivalUI();
+    }
+
+    function renderArrivalUI() {
+        const tbody = document.getElementById('arrivalTableBody');
+        tbody.innerHTML = '';
+        state.guests.forEach((g, i) => {
+            let statusBadge = `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">출발: -<br>도착: -</div>`;
+            if (g.arrivalStatus === 'moving' || g.arrivalStatus === 'arrived') {
+                statusBadge = `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">출발: <span style="color:var(--secondary); font-weight:bold;">${g.departTime||'-'}</span><br>도착: <span style="color:var(--success); font-weight:bold;">${g.arriveTime||'-'}</span></div>`;
+            }
+
+            let mainStatus = `<span style="color:var(--text-muted); font-size:0.8rem;">준비중</span>`;
+            let actionHtml = ''; let penaltyHtml = '-';
+
+            if (g.arrivalStatus === 'pending') {
+                actionHtml = `<button class="arr-btn" onclick="setArrivalStatus(${i}, 'moving')">출발</button><br><button class="arr-btn noshow-btn" onclick="triggerNoShow(${i})">노쇼 등록</button>`;
+            } else if (g.arrivalStatus === 'moving') {
+                mainStatus = `<span style="color:var(--secondary); font-size:0.8rem; font-weight:bold;">🏃 오는중</span>`;
+                actionHtml = `<button class="arr-btn moving" onclick="setArrivalStatus(${i}, 'arrived')">도착</button>`;
+            } else if (g.arrivalStatus === 'arrived') {
+                mainStatus = `<span style="color:var(--success); font-size:0.8rem; font-weight:bold;">✅ 도착</span>`;
+                actionHtml = `<span style="font-size:0.8rem; color:var(--text-muted);">완료</span>`;
+            } else if (g.arrivalStatus === 'noshow') {
+                mainStatus = `<span style="color:var(--fire); font-size:0.8rem; font-weight:bold;">🚫 노쇼</span>`;
+                actionHtml = `<span style="font-size:0.8rem; color:var(--text-muted);">종결</span>`;
+                statusBadge = '';
+            }
+
+            if (state.meeting.penalty && g.lateMinutes > 0 && g.arrivalStatus !== 'noshow') {
+                const pAmt = Math.floor(g.lateMinutes / 10) * state.meeting.penAmt;
+                penaltyHtml = `<div class="timer-red">+${g.lateMinutes}분</div><div style="font-size:0.75rem; color:var(--text-muted);">+${pAmt.toLocaleString()}원</div>`;
+            }
+            if (state.meeting.noshow && g.arrivalStatus === 'noshow') {
+                penaltyHtml = `<div style="font-size:0.8rem; color:var(--fire); font-weight:bold;">노쇼 벌금</div><div style="font-size:0.75rem; color:var(--text-muted);">+${state.meeting.nsAmt.toLocaleString()}원</div>`;
+            }
+            tbody.innerHTML += `<tr><td style="font-weight:bold; padding-top:10px;">${g.name}<br>${mainStatus}${statusBadge}</td><td style="vertical-align:middle;">${actionHtml}</td><td style="vertical-align:middle;">${penaltyHtml}</td></tr>`;
+        });
+    }
+
+    function setArrivalStatus(index, status) { 
+        state.guests[index].arrivalStatus = status; 
+        const timeNow = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+        if(status === 'moving') state.guests[index].departTime = timeNow;
+        if(status === 'arrived') state.guests[index].arriveTime = timeNow;
+        saveState(); renderArrivalUI(); 
+    }
+
+    let tempNoShowIndex = null;
+    function triggerNoShow(index) { tempNoShowIndex = index; document.getElementById('noShowModal').classList.add('show'); }
+    function closeNoShowModal(e, force = false) { if (force || e.target.id === 'noShowModal') document.getElementById('noShowModal').classList.remove('show'); }
+    function submitNoShowReason() {
+        const reason = document.getElementById('noShowReasonInput').value;
+        const gName = state.guests[tempNoShowIndex].name;
+        setArrivalStatus(tempNoShowIndex, 'noshow');
+        const feedBox = document.getElementById('noShowFeedContainer');
+        feedBox.classList.add('active');
+        feedBox.innerHTML += `<div style="margin-bottom:6px;"><b>🚫 ${gName} (노쇼):</b> ${reason || '사유 없음'}</div>`;
+        closeNoShowModal(null, true);
+    }
+
+    /* =========================================================
+       [Settlement & Digital Receipt]
+       ========================================================= */
+    function formatNumberInput(input) {
+        let val = input.value.replace(/[^0-9]/g, '');
+        if(val) input.value = parseInt(val, 10).toLocaleString();
+        else input.value = '';
+        calcSettlement();
+    }
+
+    function copyHostAccount() {
+        const bank = document.getElementById('hostBank').value;
+        const acc = document.getElementById('hostAccountInput').value;
+        if(!acc) return showToast('계좌번호를 입력해주세요.');
+        navigator.clipboard.writeText(`${bank} ${acc}`).then(() => showToast('✅ 계좌정보가 복사되었습니다!'));
+    }
+
+    function copySettleLink() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('mode', 'settle');
+        navigator.clipboard.writeText(url.toString()).then(() => showToast('🔗 정산 페이지 링크가 클립보드에 복사되었습니다!'));
+    }
+
+    let roundCount = 2;
+    let roundData = { 1: [], 2: [] }; 
+    let currentReceiptIdx = null;
+
+    function initRounds() {
+        state.guests.forEach((g, i) => { if (g.arrivalStatus !== 'noshow' && !roundData[1].includes(i)) roundData[1].push(i); });
+    }
+
+    function addNewRound() {
+        roundCount++;
+        roundData[roundCount] = [];
+        const container = document.createElement('div');
+        container.className = 'settle-card dynamic-round';
+        container.id = `round${roundCount}Card`;
+        container.innerHTML = `
+            <h3 style="margin-bottom: 15px;">${roundCount}차 정산</h3>
+            <div class="settle-row">
+                <label style="margin:0; width: 60px;">결제 금액</label>
+                <div class="settle-input-group"><input type="text" inputmode="numeric" id="r${roundCount}Amt" placeholder="0" oninput="formatNumberInput(this)"><span>원</span></div>
+            </div>
+            <button onclick="copyRoundToRound(${roundCount-1}, ${roundCount})" style="margin-bottom:8px; padding:6px 12px; font-size:0.8rem; border-radius:20px; border:1px solid var(--primary); color:var(--primary); background:rgba(108,92,231,0.1); cursor:pointer; font-weight:bold;">🔄 이전 차수와 동일</button>
+            <div id="round${roundCount}List" style="border-top: 1px dashed var(--border); padding-top: 10px;"></div>
+            <button onclick="addManualGuestToRound(${roundCount})" style="margin-top:8px; padding:6px 12px; font-size:0.8rem; border-radius:20px; border:1px solid var(--border); background:var(--card-bg); cursor:pointer;">+ 인원 추가</button>
+        `;
+        const addBtn = document.getElementById('addRoundBtn');
+        addBtn.parentNode.insertBefore(container, addBtn);
+    }
+
+    function addManualGuestToRound(r) {
+        const name = prompt(`${r}차 정산에 추가할 멤버 이름을 입력하세요.`);
+        if(!name) return;
+        let idx = state.guests.findIndex(g => g.name === name);
+        if(idx === -1) {
+            state.guests.push({ name, loc: '', ret: '', transport: 'other', dates: [], timeStart: '', timeEnd: '', menus: [], vibes: [], dist: 0, arrivalStatus: 'arrived', lateMinutes: 0, payStatus: 'pending' });
+            idx = state.guests.length - 1;
+        }
+        if(!roundData[r].includes(idx)) roundData[r].push(idx);
+        calcSettlement();
+    }
+
+    function copyRoundToRound(from, to) {
+        roundData[to] = [...roundData[from]];
+        showToast(`${from}차 인원이 ${to}차에 복사되었습니다.`);
+        calcSettlement();
+    }
+
+    function calcSettlement() {
+        if(roundData[1].length === 0 && state.guests.length > 0) initRounds(); 
+
+        let total = 0;
+        for(let r = 1; r <= roundCount; r++) {
+            const elAmt = document.getElementById(`r${r}Amt`);
+            if(!elAmt) continue;
+            const rAmt = parseInt(elAmt.value.replace(/,/g,'')) || 0;
+            const rPpl = Math.max(roundData[r].length, 1);
+            const rPer = Math.floor(rAmt / rPpl);
+            total += rAmt;
+            renderRoundList(r, rPer);
+        }
+        document.getElementById('settleTotal').innerText = total.toLocaleString() + '원';
+    }
+
+    function renderRoundList(roundNum, costPerPerson) {
+        const container = document.getElementById(`round${roundNum}List`);
+        if(!container) return;
+        container.innerHTML = '';
+        roundData[roundNum].forEach(idx => {
+            const g = state.guests[idx];
+            let stIcon = '⚪';
+            if (g.payStatus === 'sent') stIcon = '🟡';
+            if (g.payStatus === 'confirmed') stIcon = '🟢';
+
+            container.innerHTML += `
+                <div style="display:flex; justify-content:space-between; padding:6px 0; align-items:center;">
+                    <span style="font-size:0.9rem;">${stIcon} ${g.name}</span>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span style="font-weight:bold; font-size:0.9rem;">${costPerPerson.toLocaleString()}원</span>
+                        <button onclick="openReceiptModal(${idx})" style="background:none; border:none; cursor:pointer; font-size:1.4rem; padding:0; margin-left:5px;">🧾</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function openReceiptModal(idx) {
+        currentReceiptIdx = idx;
+        const g = state.guests[idx];
+        document.getElementById('rmName').innerText = `${g.name} 님의 상세 영수증`;
+        
+        let html = '';
+        let total = 0;
+        
+        for(let r = 1; r <= roundCount; r++) {
+            if(roundData[r] && roundData[r].includes(idx)) {
+                const elAmt = document.getElementById(`r${r}Amt`);
+                const rAmt = elAmt ? (parseInt(elAmt.value.replace(/,/g,'')) || 0) : 0;
+                const rPer = Math.floor(rAmt / Math.max(roundData[r].length, 1));
+                html += `<div class="receipt-row"><span>${r}차 기본 (1/N)</span><span>${rPer.toLocaleString()}원</span></div>`;
+                total += rPer;
+            }
+        }
+
+        let latePenalty = (state.meeting.penalty && g.lateMinutes > 0 && g.arrivalStatus !== 'noshow') ? Math.floor(g.lateMinutes / state.meeting.penTime) * state.meeting.penAmt : 0;
+        let nsPenalty = (state.meeting.noshow && g.arrivalStatus === 'noshow') ? state.meeting.nsAmt : 0;
+        
+        if(latePenalty > 0) { html += `<div class="receipt-row receipt-plus"><span>+ 지각 벌금 (${g.lateMinutes}분)</span><span>+${latePenalty.toLocaleString()}원</span></div>`; total += latePenalty; }
+        if(nsPenalty > 0) { html += `<div class="receipt-row receipt-plus"><span>+ 노쇼 벌금</span><span>+${nsPenalty.toLocaleString()}원</span></div>`; total += nsPenalty; }
+        
+        const activeGuests = state.guests.filter(x => x.arrivalStatus !== 'noshow');
+        if (state.meeting.yield && activeGuests.length > 1) {
+            const farthestGuest = activeGuests.reduce((max, x) => (x.dist || 0) > (max.dist || 0) ? x : max, activeGuests[0]);
+            const baseN = activeGuests.length || 1;
+            const base1Amt = parseInt(document.getElementById('r1Amt').value.replace(/,/g,''))||0;
+            const base1 = Math.floor(base1Amt / baseN);
+            const yieldDiscountTotal = Math.floor(base1 * (state.meeting.yieldPct / 100));
+            const yieldBurden = Math.floor(yieldDiscountTotal / (activeGuests.length - 1));
+
+            if (g === farthestGuest && g.arrivalStatus !== 'noshow') {
+                html += `<div class="receipt-row receipt-minus"><span>- 양보 포인트 (최장거리)</span><span>-${yieldDiscountTotal.toLocaleString()}원</span></div>`;
+                total -= yieldDiscountTotal;
+            } else if (g.arrivalStatus !== 'noshow') {
+                html += `<div class="receipt-row receipt-plus"><span>+ 양보 할인 분담금</span><span>+${yieldBurden.toLocaleString()}원</span></div>`;
+                total += yieldBurden;
+            }
+        }
+
+        html += `<div class="receipt-row total"><span>최종 송금액</span><span>${total.toLocaleString()}원</span></div>`;
+        document.getElementById('rmContent').innerHTML = html;
+
+        const btn = document.getElementById('rmStatusBtn');
+        if (g.payStatus === 'sent') { btn.className = 'pay-status-btn pay-status-sent'; btn.innerText = '💸 송금 완료 (호스트 확인 대기)'; }
+        else if (g.payStatus === 'confirmed') { btn.className = 'pay-status-btn pay-status-confirmed'; btn.innerText = '✅ 입금 확인 종결'; }
+        else { btn.className = 'pay-status-btn pay-status-pending'; btn.innerText = '미입금 (상태 변경)'; }
+
+        document.getElementById('receiptModal').classList.add('show');
+    }
+
+    function toggleReceiptStatus() {
+        const g = state.guests[currentReceiptIdx];
+        if(g.payStatus === 'pending') g.payStatus = 'sent';
+        else if(g.payStatus === 'sent') g.payStatus = 'confirmed';
+        else g.payStatus = 'pending';
+        saveState();
+        calcSettlement();
+        openReceiptModal(currentReceiptIdx); 
+    }
+
+    function closeReceiptModal(e, force = false) { 
+        if (force || e.target.id === 'receiptModal') document.getElementById('receiptModal').classList.remove('show'); 
+    }
+
+    function setupNextMeeting() {
+        if(confirm("모든 정산이 완료되었나요?\n기존 정책을 유지한 채 새로운 날짜 투표를 시작합니다.")) {
+            state.meeting.confirmedDate = ''; state.meeting.confirmedLoc = ''; state.finalChoice = null;
+            state.guests.forEach(g => { g.arrivalStatus = 'pending'; g.lateMinutes = 0; g.payStatus = 'pending'; g.dates = []; });
+            if (arrivalTimer) clearInterval(arrivalTimer);
+            saveState(); showScr('scr-create'); showToast('새로운 모임 생성 준비 완료!');
+        }
+    }
+</script>
+
 </body>
 </html>
