@@ -20,3 +20,27 @@
 .lang-toggle-btn:active {
     transform: scale(0.95);
 }
+
+/* 광고 제휴 섹션 스타일 */
+.partner-section { margin-top: 30px; margin-bottom: 20px; }
+.partner-card { 
+    background: linear-gradient(135deg, #2d3436 0%, #000000 100%); 
+    color: white; border: none; position: relative; overflow: hidden; 
+}
+.partner-card h3 { color: white !important; margin-bottom: 10px; }
+.partner-card p { color: #dfe6e9; font-size: 0.9rem; opacity: 0.9; }
+.partner-badge { 
+    position: absolute; top: 15px; right: -25px; background: var(--gold); 
+    color: black; padding: 4px 30px; font-size: 0.7rem; font-weight: 900; 
+    transform: rotate(45deg); box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.partner-stats { 
+    margin: 15px 0; font-size: 0.85rem; font-weight: bold; color: var(--secondary); 
+}
+.partner-btn { background: white !important; color: black !important; border: none; }
+.partner-btn:hover { background: var(--secondary) !important; color: white !important; }
+
+.inquiry-form-card { 
+    border: 2px solid var(--primary); animation: slideDown 0.4s ease-out; 
+}
+@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }

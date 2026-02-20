@@ -451,6 +451,39 @@
             <h3 style="margin-top: 30px;">🍽️ AI 추천 식당 Top 5</h3>
             <div class="explain-box">💡 멤버들이 선택한 <b>[선호 메뉴]</b>와 <b>[원하는 분위기]</b>를 바탕으로 분석한 결과입니다.</div>
             <div id="aiRecList"></div>
+
+            <!-- [추가] 광고 제휴 배너 및 폼 -->
+            <div class="partner-section">
+                <div class="card partner-card">
+                    <div class="partner-badge" data-i18n="partner_badge">사장님 전용</div>
+                    <h3 data-i18n="partner_title">이 근처 식당을 운영하시나요?</h3>
+                    <p data-i18n="partner_desc">Where2Meet 멤버들에게 우리 가게를 홍보하고 특별한 혜택을 제공해 보세요!</p>
+                    <div class="partner-stats">
+                        <span data-i18n="partner_stats">🔥 이번 달 824개의 모임 성사!</span>
+                    </div>
+                    <button class="main-btn partner-btn" onclick="togglePartnerForm()" data-i18n="partner_btn">제휴 문의하기</button>
+                </div>
+
+                <div id="partnerFormContainer" class="card inquiry-form-card" style="display: none; margin-top: 15px;">
+                    <h3 data-i18n="inquiry_title">간편 제휴 신청</h3>
+                    <form id="partnerForm" action="https://formspree.io/f/mwvqrnjg" method="POST">
+                        <label data-i18n="label_store_name">가게명</label>
+                        <input type="text" name="store_name" required placeholder="가게 이름을 입력하세요" data-i18n="ph_store_name">
+                        
+                        <label data-i18n="label_region">지역</label>
+                        <input type="text" name="region" required placeholder="예: 서울 강남구" data-i18n="ph_region">
+                        
+                        <label data-i18n="label_contact">연락처</label>
+                        <input type="tel" name="contact" required placeholder="010-0000-0000" data-i18n="ph_contact">
+                        
+                        <label data-i18n="label_email">이메일 주소</label>
+                        <input type="email" name="email" required placeholder="example@mail.com" data-i18n="ph_email">
+                        
+                        <button type="submit" class="main-btn" style="margin-top: 15px;" data-i18n="submit_inquiry">문의 등록하기</button>
+                        <button type="button" class="close-modal" onclick="togglePartnerForm()" data-i18n="cancel">취소</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
