@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Where2Meet - 스마트 모임 조율</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         /* =========================================================
            [기존 코드 완벽 보존 구역] Design System & Common UI 
@@ -216,26 +217,27 @@
             <div class="logo" onclick="goHome()">Where2Meet</div>
         </div>
         <div class="nav-right">
+            <button class="lang-toggle-btn" onclick="toggleLanguage()" id="langToggleBtn">EN</button>
             <button class="theme-toggle-btn" onclick="toggleDarkMode()" id="themeToggleBtn" aria-label="테마 변경">🌙</button>
-            <button id="logoutBtn" style="display:none; background:transparent; border:none; color:var(--text-muted); font-size:0.8rem; font-weight:bold; cursor:pointer;" onclick="simulateLogout()">로그아웃</button>
+            <button id="logoutBtn" style="display:none; background:transparent; border:none; color:var(--text-muted); font-size:0.8rem; font-weight:bold; cursor:pointer;" onclick="simulateLogout()" data-i18n="logout">로그아웃</button>
         </div>
     </header>
 
     <div id="scr-login" class="screen active">
         <div style="text-align: center; padding: 80px 0;">
-            <h1 style="font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 10px;">Where2Meet</h1>
-            <p style="font-weight: 600; margin-bottom: 50px;">가장 친절한 모임의 시작</p>
+            <h1 style="font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 10px;" data-i18n="brand_name">Where2Meet</h1>
+            <p style="font-weight: 600; margin-bottom: 50px;" data-i18n="hero_sub">가장 친절한 모임의 시작</p>
             <button class="google-btn" onclick="simulateLogin()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" style="width: 20px; height: 20px;">
-                Google 계정으로 시작하기
+                <span data-i18n="login_google">Google 계정으로 시작하기</span>
             </button>
         </div>
     </div>
 
     <div id="scr-dashboard" class="screen">
-        <button class="main-btn" onclick="showScr('scr-create')">➕ 새로운 모임 만들기</button>
+        <button class="main-btn" onclick="showScr('scr-create')" data-i18n="new_meeting">➕ 새로운 모임 만들기</button>
         
-        <h3 style="margin-top: 35px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+        <h3 style="margin-top: 35px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;" data-i18n="ongoing_meetings">
             🚀 진행 중인 모임
         </h3>
         
@@ -264,18 +266,18 @@
     </div>
 
     <div id="scr-create" class="screen">
-        <h2>모임 정책 설정</h2>
-        <label>모임 이름</label><input type="text" id="mName" placeholder="예: 연말 동기 모임">
-        <label>날짜 범위 선택</label>
+        <h2 data-i18n="meeting_policy">모임 정책 설정</h2>
+        <label data-i18n="meeting_name_label">모임 이름</label><input type="text" id="mName" placeholder="예: 연말 동기 모임" data-i18n="create_placeholder">
+        <label data-i18n="date_range_label">날짜 범위 선택</label>
         <div class="date-range-group">
             <input type="date" id="sDate"> <span style="font-weight:bold; color:var(--text-muted);">~</span> <input type="date" id="eDate">
         </div>
         
         <div class="card" style="margin-top: 24px;">
-            <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 15px;">정책 설정</h3>
+            <h3 style="margin-top: 0; font-size: 1.1rem; margin-bottom: 15px;" data-i18n="policy_settings">정책 설정</h3>
             
             <div class="policy-group">
-                <label style="margin: 0 0 8px 0;">투표 마감 및 시간</label>
+                <label style="margin: 0 0 8px 0;" data-i18n="vote_deadline">투표 마감 및 시간</label>
                 <div style="display: flex; gap: 8px;">
                     <input type="date" id="voteDeadline" style="flex: 2; margin:0;">
                     <select id="voteDeadlineTime" style="flex: 1; margin:0;">
@@ -286,7 +288,7 @@
             
             <div class="policy-group">
                 <div class="policy-header">
-                    <span style="font-weight: 700;">지각 벌금</span>
+                    <span style="font-weight: 700;" data-i18n="late_penalty">지각 벌금</span>
                     <div class="toggle-ui toggle-active" id="t-penalty" onclick="togglePolicy('penalty')"></div>
                 </div>
                 <div id="detail-penalty" class="policy-details show">
@@ -299,7 +301,7 @@
 
             <div class="policy-group">
                 <div class="policy-header">
-                    <span style="font-weight: 700; color: #000000;">노쇼(No-Show) 벌금</span>
+                    <span style="font-weight: 700; color: #000000;" data-i18n="noshow_penalty">노쇼(No-Show) 벌금</span>
                     <div class="toggle-ui toggle-active" id="t-noshow" onclick="togglePolicy('noshow')"></div>
                 </div>
                 <div id="detail-noshow" class="policy-details show">
@@ -313,7 +315,7 @@
             <div class="policy-group">
                 <div class="policy-header">
                     <div style="display:flex; align-items:center; gap:6px;">
-                        <span style="font-weight: 700;">양보 포인트</span>
+                        <span style="font-weight: 700;" data-i18n="yield_point">양보 포인트</span>
                         <div class="tooltip-container">
                             <span class="tooltip-icon">ⓘ</span>
                             <div class="tooltip-box">
@@ -334,12 +336,12 @@
             
             <div class="policy-group" style="border:none; padding-bottom:0; margin-bottom:0;">
                 <div class="policy-header" style="margin:0;">
-                    <span style="font-weight: 700;">날짜 다중 선택 가능</span>
+                    <span style="font-weight: 700;" data-i18n="multi_date">날짜 다중 선택 가능</span>
                     <div class="toggle-ui toggle-active" id="t-multi" onclick="togglePolicy('multi')"></div>
                 </div>
             </div>
         </div>
-        <button class="main-btn" onclick="initMeeting()">모임 시작하기</button>
+        <button class="main-btn" onclick="initMeeting()" data-i18n="start_meeting_btn">모임 시작하기</button>
     </div>
 
     <div id="scr-vote" class="screen">
@@ -591,6 +593,7 @@
 
 <div id="toast" class="toast">알림</div>
 
+<script src="main.js"></script>
 <script>
     /* =========================================================
        [Javascript Logic]
