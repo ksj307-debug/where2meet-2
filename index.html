@@ -225,11 +225,6 @@
         .feature-item h4 { margin: 0 0 8px 0; font-size: 0.95rem; color: var(--primary); }
         .feature-item p { margin: 0; font-size: 0.8rem; line-height: 1.4; }
         
-        .footer-nav { margin-top: 60px; padding: 40px 20px; border-top: 1px solid var(--border); text-align: center; font-size: 0.8rem; color: var(--text-muted); }
-        .footer-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-weight: 600; }
-        .footer-links a:hover { color: var(--primary); }
-        
         .content-section { margin-top: 40px; text-align: left; }
         .content-card { background: var(--card-bg); border-radius: 20px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); }
         .content-card h3 { color: var(--primary); border-bottom: 2px solid var(--secondary); display: inline-block; padding-bottom: 5px; margin-bottom: 20px; }
@@ -468,26 +463,26 @@
             <h3>⏰ 예상 도착 시간</h3>
             <p style="font-size: 0.85rem; margin-top: -10px; margin-bottom: 15px;">모임 장소에 도착 가능한 시간 범위를 알려주세요.</p>
             <div class="time-group">
-                <div style="flex:1;">
-                    <label style="margin-top:0;">From</label>
-                    <select id="tTimeStart">
-                        <option value="11">오전 11시</option><option value="12">오후 12시</option><option value="13">오후 1시</option>
-                        <option value="14">오후 2시</option><option value="15">오후 3시</option><option value="16">오후 4시</option>
-                        <option value="17">오후 5시</option><option value="18" selected>오후 6시</option><option value="19">오후 7시</option>
-                        <option value="20">오후 8시</option><option value="21">오후 9시</option><option value="22">오후 10시</option>
-                        <option value="23">오후 11시</option>
-                    </select>
-                </div>
-                <div style="flex:1;">
-                    <label style="margin-top:0;">To</label>
-                    <select id="tTimeEnd">
-                        <option value="12">오후 12시</option><option value="13">오후 1시</option><option value="14">오후 2시</option>
-                        <option value="15">오후 3시</option><option value="16">오후 4시</option><option value="17">오후 5시</option>
-                        <option value="18">오후 6시</option><option value="19">오후 7시</option><option value="20">오후 8시</option>
-                        <option value="21" selected>오후 9시</option><option value="22">오후 10시</option>
-                        <option value="23">오후 11시</option><option value="24">자정 (12시)</option>
-                    </select>
-                </div>
+                                <div style="flex:1;">
+                                    <label style="margin-top:0;">From</label>
+                                    <select id="tTimeStart">
+                                        <option value="11">오전 11시</option><option value="12">오후 12시</option><option value="13">오후 1시</option>
+                                        <option value="14">오후 2시</option><option value="15">오후 3시</option><option value="16">오후 4시</option>
+                                        <option value="17">오후 5시</option><option value="18" selected>오후 6시</option><option value="19">오후 7시</option>
+                                        <option value="20">오후 8시</option><option value="21">오후 9시</option><option value="22">오후 10시</option>
+                                        <option value="23">오후 11시</option>
+                                    </select>
+                                </div>
+                                <div style="flex:1;">
+                                    <label style="margin-top:0;">To</label>
+                                    <select id="tTimeEnd">
+                                        <option value="12">오후 12시</option><option value="13">오후 1시</option><option value="14">오후 2시</option>
+                                        <option value="15">오후 3시</option><option value="16">오후 4시</option><option value="17">오후 5시</option>
+                                        <option value="18">오후 6시</option><option value="19" selected>오후 7시</option><option value="20">오후 8시</option>
+                                        <option value="21">오후 9시</option><option value="22">오후 10시</option><option value="23">오후 11시</option>
+                                        <option value="24">자정 (12시)</option>
+                                    </select>
+                                </div>
             </div>
         </div>
         <div class="card">
@@ -513,35 +508,43 @@
             <h3 style="margin-top: 30px;">🍽️ AI 추천 식당 Top 5</h3>
             <div class="explain-box">💡 멤버들이 선택한 <b>[선호 메뉴]</b>와 <b>[원하는 분위기]</b>를 바탕으로 분석한 결과입니다.</div>
             <div id="aiRecList"></div>
+        </div>
+    </div>
 
-            <div class="partner-section">
-                <div class="card partner-card">
-                    <div class="partner-badge" data-i18n="partner_badge">사장님 전용</div>
-                    <h3 data-i18n="partner_title">이 근처 식당을 운영하시나요?</h3>
-                    <p data-i18n="partner_desc">Where2Meet 멤버들에게 우리 가게를 홍보하고 특별한 혜택을 제공해 보세요!</p>
-                    <div class="partner-stats">
-                        <span data-i18n="partner_stats">🔥 이번 달 824개의 모임 성사!</span>
-                    </div>
-                    <button class="main-btn partner-btn" onclick="togglePartnerForm()" data-i18n="partner_btn">제휴 문의하기</button>
-                </div>
-
-                <div id="partnerFormContainer" class="card inquiry-form-card" style="display: none; margin-top: 15px;">
-                    <h3 data-i18n="inquiry_title">간편 제휴 신청</h3>
-                    <form id="partnerForm" action="https://formspree.io/f/mwvqrnjg" method="POST">
-                        <label data-i18n="label_store_name">가게명</label>
-                        <input type="text" name="store_name" required placeholder="가게 이름을 입력하세요" data-i18n="ph_store_name">
-                        <label data-i18n="label_region">지역</label>
-                        <input type="text" name="region" required placeholder="예: 서울 강남구" data-i18n="ph_region">
-                        <label data-i18n="label_contact">연락처</label>
-                        <input type="tel" name="contact" required placeholder="010-0000-0000" data-i18n="ph_contact">
-                        <label data-i18n="label_email">이메일 주소</label>
-                        <input type="email" name="email" required placeholder="example@mail.com" data-i18n="ph_email">
-                        <button type="submit" class="main-btn" style="margin-top: 15px;" data-i18n="submit_inquiry">문의 등록하기</button>
-                        <button type="button" class="close-modal" onclick="togglePartnerForm()" data-i18n="cancel">취소</button>
-                    </form>
-                </div>
+    <!-- 신규 추가: 서비스 소개 -->
+    <div id="scr-about" class="screen">
+        <h2 style="margin-top: 10px;">💡 서비스 소개</h2>
+        <div class="content-section">
+            <div class="content-card">
+                <h3>고품질 모임을 위한 가이드</h3>
+                <p>Where2Meet은 단순한 도구를 넘어, 더 나은 커뮤니티 문화를 지향합니다.</p>
+                <ul class="tip-list">
+                    <li><b>장소 선정의 공정성:</b> 단순히 물리적 거리가 아닌, 대중교통 소요 시간을 고려한 '시간적 중간 지점'을 선택하는 것이 참여도를 높입니다.</li>
+                    <li><b>명확한 커뮤니케이션:</b> 모임의 목적(회식, 스터디, 번개 등)을 미리 공유하면 메뉴와 분위기 투표 결과가 더 만족스러워집니다.</li>
+                    <li><b>책임감 있는 참여:</b> 불가피한 노쇼 시 사유를 미리 공유하고 벌금 정책을 따르는 것은 멤버 간의 신뢰를 유지하는 핵심입니다.</li>
+                </ul>
+                <p style="font-size: 0.85rem; font-weight: 600; color: var(--primary);">Where2Meet과 함께 스트레스 없는 즐거운 만남을 시작해 보세요!</p>
             </div>
         </div>
+    </div>
+
+    <!-- 신규 추가: 문의하기 -->
+    <div id="scr-inquiry" class="screen">
+        <h2 style="margin-top: 10px;">📧 문의 및 제휴</h2>
+        <p class="inquiry-intro" style="background: var(--chip-bg); padding: 15px; border-radius: 12px; line-height: 1.5; font-size: 0.9rem; color: var(--text-muted);">
+            Where2Meet과 함께할 파트너분들의 소중한 제안을 기다립니다. 제휴 제안 및 서비스 이용 관련 문의를 남겨주시면 담당자가 확인 후 신속히 회신드리겠습니다.
+        </p>
+        <form id="globalInquiryForm" action="https://formspree.io/f/mwvqrnjg" method="POST" class="card" style="margin-top: 20px;">
+            <label>가게/기업명</label>
+            <input type="text" name="company_name" required placeholder="가게 또는 기업명을 입력하세요">
+            <label>연락처</label>
+            <input type="tel" name="contact" required placeholder="010-0000-0000">
+            <label>이메일 주소</label>
+            <input type="email" name="email" required placeholder="example@mail.com">
+            <label>문의 내용</label>
+            <textarea name="message" rows="5" style="width:100%; border:1px solid var(--border); border-radius:12px; padding:15px; background:var(--input-bg); color:var(--text-color); font-family:inherit;" placeholder="문의하실 내용을 자유롭게 작성해주세요"></textarea>
+            <button type="submit" class="main-btn" style="margin-top: 20px;">문의 등록하기</button>
+        </form>
     </div>
 
     <div id="scr-final-confirmed" class="screen">
@@ -581,35 +584,42 @@
     </div>
 
     <div id="scr-arrival" class="screen">
-        <h2 style="display: flex; justify-content: space-between; align-items: center;">
-            🏃 실시간 도착 현황
-            <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);" id="arrMeetingTimeDisplay"></span>
+        <h2 style="display: flex; justify-content: space-between; align-items: center; flex-direction: column; gap: 10px;">
+            <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">🏃 우리의 약속 시간</span>
+            <span id="arrMeetingTimeDisplay" style="font-size: 2.2rem; font-weight: 900; color: var(--primary); letter-spacing: -1px;"></span>
         </h2>
         <div id="noShowFeedContainer" class="feed-box"></div>
         <div class="card" style="padding: 0; overflow: hidden;">
             <table class="arr-table">
-                <thead><tr><th>이름</th><th>상태 조작</th><th>벌금 현황</th></tr></thead>
+                <thead><tr><th>이름</th><th>상태</th><th>벌금 및 현황</th></tr></thead>
                 <tbody id="arrivalTableBody"></tbody>
             </table>
         </div>
-        <div class="explain-box" style="margin-top: 15px;">
-            💡 <b>지각 벌금 자동 반영 안내</b><br>
-            약속 시간을 기준으로 지각한 멤버에게는 사전에 설정한 분 단위 벌금이 자동 누적되어 추후 정산 영수증에 합산 청구됩니다.
+        <div id="arrivalPolicySummary" style="margin-top: 20px; padding: 15px; background: rgba(108, 92, 231, 0.05); border-radius: 14px; font-size: 0.85rem; color: var(--text-color); line-height: 1.6; border: 1px dashed var(--primary);">
+            <div style="font-weight:bold; margin-bottom:5px;">📋 설정된 정책 리마인드</div>
+            <div id="policyRemindText"></div>
         </div>
-        <button class="main-btn" onclick="showScr('scr-settlement')">💸 정산 하러 가기</button>
+        <button class="main-btn" style="margin-top: 20px;" onclick="showScr('scr-settlement')">💸 정산 하러 가기</button>
     </div>
 
     <div id="scr-settlement" class="screen">
         <h2 style="text-align: center;">💸 모임 정산하기</h2>
         
         <div class="card" style="margin-bottom: 20px;">
-            <h3 style="margin-top:0;">💳 송금받을 계좌/링크 (호스트 전용)</h3>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <select id="hostBank" style="flex: 1; margin:0; padding:12px; font-size:0.9rem;">
-                    <option>카카오뱅크</option><option>토스뱅크</option><option>국민은행</option><option>신한은행</option><option>송금링크</option>
+            <h3 style="margin-top:0;">💳 송금받을 계좌 정보 (호스트)</h3>
+            <div style="display:flex; flex-direction: column; gap:10px;">
+                <select id="hostBank" style="width: 100%;">
+                    <optgroup label="주요 은행">
+                        <option>카카오뱅크</option><option>토스뱅크</option><option>국민은행</option><option>신한은행</option><option>우리은행</option><option>하나은행</option><option>IBK기업은행</option><option>NH농협은행</option>
+                    </optgroup>
+                    <optgroup label="은행/증권사 (가나다순)">
+                        <option>경남은행</option><option>광주은행</option><option>교보증권</option><option>대구은행</option><option>대신증권</option><option>미래에셋증권</option><option>부산은행</option><option>산업은행</option><option>삼성증권</option><option>상호저축은행</option><option>새마을금고</option><option>수협은행</option><option>신협</option><option>씨티은행</option><option>우체국</option><option>유안타증권</option><option>전북은행</option><option>제주은행</option><option>케이뱅크</option><option>키움증권</option><option>한국투자증권</option><option>한화투자증권</option><option>KB증권</option><option>NH투자증권</option><option>SC제일은행</option>
+                    </optgroup>
                 </select>
-                <input type="text" id="hostAccountInput" placeholder="계좌번호" value="" style="flex: 2; margin:0; padding:12px;">
-                <button onclick="copyHostAccount()" style="background:var(--chip-bg); border:1px solid var(--border); border-radius:10px; padding:12px; cursor:pointer; font-size:1.1rem;">📋</button>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <input type="text" id="hostAccountInput" placeholder="계좌번호 입력" style="flex: 1; margin:0;">
+                    <button onclick="copyHostAccount()" style="background:var(--chip-bg); border:1px solid var(--border); border-radius:10px; padding:12px; cursor:pointer; font-size:1.1rem;">📋</button>
+                </div>
             </div>
         </div>
 
@@ -647,29 +657,15 @@
         </div>
         <button class="main-btn" style="margin-top: 20px;" onclick="copySettleLink()">🔗 정산 결과 공유하기</button>
         <button class="main-btn" style="background:var(--text-color); margin-top:20px;" onclick="setupNextMeeting()">📅 다음 만남 설정하기</button>
-        
-        <button class="feedback-entry-btn" onclick="showScr('scr-feedback')">
-            <span data-i18n="feedback_btn_long">Where2Meet은 여러분의 의견으로 성장합니다. 피드백 남기기</span>
-        </button>
-    </div>
-
-    <div id="scr-feedback" class="screen">
-        <div class="feedback-header">
-            <h2 data-i18n="feedback_title">사용자 피드백</h2>
-        </div>
-        <div class="card feedback-info-card">
-            <p data-i18n="feedback_text">여러분의 소중한 한마디가 Where2Meet을 성장시키는 큰 힘이 됩니다. 남겨주시는 피드백은 하나하나 정성껏 검토하여 더 나은 서비스로 보답하겠습니다.</p>
-        </div>
-        <div id="disqus_thread"></div>
     </div>
 
     <footer class="footer-nav">
         <div class="footer-links">
-            <a href="#" onclick="showScr('scr-login')">홈</a>
-            <a href="#" onclick="alert('준비 중인 페이지입니다.')">서비스 소개</a>
+            <a href="#" onclick="showScr('scr-login'); return false;">홈</a>
+            <a href="#" onclick="showScr('scr-about'); return false;">서비스 소개</a>
             <a href="#" onclick="alert('이용약관: Where2Meet은 모임 조율을 위한 편의 기능을 제공합니다.')">이용약관</a>
             <a href="#" onclick="alert('개인정보처리방침: 당사는 사용자가 입력한 위치 정보를 약속 장소 추천 이외의 용도로 저장하지 않습니다.')">개인정보처리방침</a>
-            <a href="mailto:support@where2meet.example.com">문의하기</a>
+            <a href="#" onclick="showScr('scr-inquiry'); return false;">문의하기</a>
         </div>
         <p>© 2026 Where2Meet Team. All rights reserved.</p>
         <p style="font-size: 0.7rem; margin-top: 10px; opacity: 0.6;">고품질의 모임 경험을 제공하는 Where2Meet은 Google AdSense 정책을 준수합니다.</p>
