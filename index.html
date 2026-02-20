@@ -1,9 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-1615562045321022">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1615562045321022"
+     crossorigin="anonymous"></script>
     <title>Where2Meet - 스마트 모임 조율</title>
     <link rel="stylesheet" href="style.css">
     <style>
@@ -37,9 +39,10 @@
         .back-btn { background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color); padding: 0; display: flex; align-items: center; transition: transform 0.2s, color 0.3s ease; }
         .back-btn:active { transform: scale(0.8); color: var(--primary); }
         .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); cursor: pointer; letter-spacing: -0.5px; transition: color 0.3s ease;}
-        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
         .theme-toggle-btn { background: var(--chip-bg); border: 1px solid var(--border); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; color: var(--text-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .theme-toggle-btn:active { transform: scale(0.9); }
+        .lang-toggle-btn { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 6px 10px; font-weight: bold; cursor: pointer; color: var(--text-color); font-size: 0.8rem; }
 
         .global-banner { position: sticky; top: 60px; z-index: 99; background: var(--chip-bg); border-bottom: 1px solid var(--border); padding: 10px 20px; font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; transition: all 0.3s ease; }
         .global-banner::-webkit-scrollbar { display: none; }
@@ -192,11 +195,7 @@
         .pay-status-sent { background: #ffeaa7; color: #d35400; }
         .pay-status-confirmed { background: var(--success); color: white; }
 
-        /* =========================================================
-           [추가된 구역] 로그인 및 대시보드 확장 UI 스타일
-           ========================================================= */
-        .google-btn { width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: 16px; font-size: 1.05rem; font-weight: bold; cursor: pointer; background: var(--card-bg); color: var(--text-color); display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; box-shadow: var(--shadow); }
-        .google-btn:active { transform: scale(0.98); background: var(--chip-bg); }
+        /* [추가된 구역] 로그인 및 대시보드 확장 UI 스타일 */
         .empty-state { text-align: center; padding: 40px 20px; background: var(--card-bg); border: 1px dashed var(--border); border-radius: 16px; color: var(--text-muted); margin-bottom: 20px;}
         .skeleton-card { background: var(--card-bg); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); animation: pulse 1.5s infinite ease-in-out; }
         .skeleton-title { width: 60%; height: 20px; background: var(--border); border-radius: 8px; margin-bottom: 10px; }
@@ -204,6 +203,16 @@
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 0.3; } 100% { opacity: 0.6; } }
         .meeting-list-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: var(--shadow); cursor: pointer; transition: 0.2s; }
         .meeting-list-card:active { transform: scale(0.98); }
+        
+        .partner-card { background: linear-gradient(135deg, #fff, #f8f9fa); border: 2px dashed var(--primary); text-align: center; padding: 25px 20px; }
+        .partner-badge { background: var(--primary); color: white; font-size: 0.75rem; font-weight: bold; padding: 4px 10px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
+        .partner-btn { background: var(--card-bg); color: var(--primary); border: 2px solid var(--primary); padding: 12px; margin-top: 15px; box-shadow: none; }
+        .partner-btn:hover { background: rgba(108, 92, 231, 0.05); }
+        .inquiry-form-card { background: var(--card-bg); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 20px; }
+        .feedback-entry-btn { width: 100%; padding: 15px; background: transparent; border: 1px dashed var(--text-muted); color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: 0.3s; margin-top: 30px; font-weight: bold; }
+        .feedback-entry-btn:hover { background: var(--chip-bg); }
+        .feedback-header { padding: 20px 0; text-align: center; }
+        .feedback-info-card { text-align: center; font-size: 0.9rem; line-height: 1.5; color: var(--text-muted); margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -228,7 +237,7 @@
             <h1 style="font-size: 2.8rem; font-weight: 900; color: var(--primary); margin-bottom: 10px;" data-i18n="brand_name">Where2Meet</h1>
             <p style="font-weight: 600; margin-bottom: 50px;" data-i18n="hero_sub">가장 친절한 모임의 시작</p>
             <button class="google-btn" onclick="simulateLogin()">
-                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" style="width: 18px; height: 18px;">
+                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
                 <span data-i18n="login_google">Google 계정으로 시작하기</span>
             </button>
         </div>
@@ -246,8 +255,7 @@
             <div class="skeleton-card"><div class="skeleton-title"></div><div class="skeleton-sub"></div></div>
         </div>
         
-        <div id="dashboardContent" style="display: none;">
-            </div>
+        <div id="dashboardContent" style="display: none;"></div>
     </div>
 
     <div id="globalSummaryBanner" class="global-banner" style="display: none;">
@@ -404,7 +412,6 @@
         <div class="card">
             <h3>⏰ 예상 도착 시간</h3>
             <p style="font-size: 0.85rem; margin-top: -10px; margin-bottom: 15px;">모임 장소에 도착 가능한 시간 범위를 알려주세요.</p>
-            
             <div class="time-group">
                 <div style="flex:1;">
                     <label style="margin-top:0;">From</label>
@@ -452,7 +459,6 @@
             <div class="explain-box">💡 멤버들이 선택한 <b>[선호 메뉴]</b>와 <b>[원하는 분위기]</b>를 바탕으로 분석한 결과입니다.</div>
             <div id="aiRecList"></div>
 
-            <!-- [추가] 광고 제휴 배너 및 폼 -->
             <div class="partner-section">
                 <div class="card partner-card">
                     <div class="partner-badge" data-i18n="partner_badge">사장님 전용</div>
@@ -469,16 +475,12 @@
                     <form id="partnerForm" action="https://formspree.io/f/mwvqrnjg" method="POST">
                         <label data-i18n="label_store_name">가게명</label>
                         <input type="text" name="store_name" required placeholder="가게 이름을 입력하세요" data-i18n="ph_store_name">
-                        
                         <label data-i18n="label_region">지역</label>
                         <input type="text" name="region" required placeholder="예: 서울 강남구" data-i18n="ph_region">
-                        
                         <label data-i18n="label_contact">연락처</label>
                         <input type="tel" name="contact" required placeholder="010-0000-0000" data-i18n="ph_contact">
-                        
                         <label data-i18n="label_email">이메일 주소</label>
                         <input type="email" name="email" required placeholder="example@mail.com" data-i18n="ph_email">
-                        
                         <button type="submit" class="main-btn" style="margin-top: 15px;" data-i18n="submit_inquiry">문의 등록하기</button>
                         <button type="button" class="close-modal" onclick="togglePartnerForm()" data-i18n="cancel">취소</button>
                     </form>
@@ -520,7 +522,6 @@
                 <button class="main-btn" style="flex: 1; padding: 14px; margin: 0; background: var(--primary); font-size: 0.95rem;" onclick="showToast('알림 예약 완료')">알람 저장</button>
             </div>
         </div>
-        
         <button class="main-btn" style="background:var(--text-color); margin-bottom: 10px;" onclick="showScr('scr-arrival')">🏃 실시간 도착 현황 보기</button>
     </div>
 
@@ -591,6 +592,20 @@
         </div>
         <button class="main-btn" style="margin-top: 20px;" onclick="copySettleLink()">🔗 정산 결과 공유하기</button>
         <button class="main-btn" style="background:var(--text-color); margin-top:20px;" onclick="setupNextMeeting()">📅 다음 만남 설정하기</button>
+        
+        <button class="feedback-entry-btn" onclick="showScr('scr-feedback')">
+            <span data-i18n="feedback_btn_long">Where2Meet은 여러분의 의견으로 성장합니다. 피드백 남기기</span>
+        </button>
+    </div>
+
+    <div id="scr-feedback" class="screen">
+        <div class="feedback-header">
+            <h2 data-i18n="feedback_title">사용자 피드백</h2>
+        </div>
+        <div class="card feedback-info-card">
+            <p data-i18n="feedback_text">여러분의 소중한 한마디가 Where2Meet을 성장시키는 큰 힘이 됩니다. 남겨주시는 피드백은 하나하나 정성껏 검토하여 더 나은 서비스로 보답하겠습니다.</p>
+        </div>
+        <div id="disqus_thread"></div>
     </div>
 </div>
 
@@ -626,11 +641,88 @@
 
 <div id="toast" class="toast">알림</div>
 
-<script src="main.js"></script>
 <script>
     /* =========================================================
        [Javascript Logic]
        ========================================================= */
+
+    // [복원된 영역] 다국어(Translations) 모의 객체
+    let currentLang = 'ko';
+    const translations = {
+        'ko': {
+            inquiry_success: "제휴 문의가 성공적으로 접수되었습니다.",
+            inquiry_error: "접수 중 오류가 발생했습니다. 다시 시도해주세요."
+        },
+        'en': {
+            inquiry_success: "Your partnership inquiry has been submitted successfully.",
+            inquiry_error: "An error occurred. Please try again."
+        }
+    };
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'ko' ? 'en' : 'ko';
+        document.getElementById('langToggleBtn').innerText = currentLang === 'ko' ? 'EN' : 'KO';
+        updateTexts();
+    }
+
+    function updateTexts() {
+        // 기존 코드에서 updateTexts() 호출만 있었으므로, 크래시 방지용 껍데기 함수
+        // 필요시 data-i18n 속성을 통해 DOM 업데이트 추가 가능
+    }
+
+    // [복원된 영역] 로그인 및 대시보드 함수
+    function simulateLogin() {
+        localStorage.setItem('w2m_auth', 'true');
+        document.getElementById('logoutBtn').style.display = 'block';
+        showScr('scr-dashboard');
+    }
+
+    function simulateLogout() {
+        localStorage.removeItem('w2m_auth');
+        document.getElementById('logoutBtn').style.display = 'none';
+        showScr('scr-login');
+    }
+
+    function loadDashboardData() {
+        const loadingEl = document.getElementById('dashboardLoading');
+        const contentEl = document.getElementById('dashboardContent');
+        if(loadingEl) loadingEl.style.display = 'block';
+        if(contentEl) contentEl.style.display = 'none';
+
+        setTimeout(() => {
+            if(loadingEl) loadingEl.style.display = 'none';
+            if(contentEl) {
+                contentEl.style.display = 'block';
+                if (state.meeting && state.meeting.name) {
+                    contentEl.innerHTML = `
+                        <div class="meeting-list-card" onclick="resumeMeeting()">
+                            <div style="font-weight: 800; font-size: 1.1rem; margin-bottom: 6px;">${state.meeting.name}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">📅 ${state.meeting.start || '날짜 미정'} ~ ${state.meeting.end || ''}</div>
+                            <div style="display: inline-block; font-size: 0.75rem; padding: 4px 8px; background: rgba(108, 92, 231, 0.1); border-radius: 12px; color: var(--primary); font-weight: bold;">
+                                최근 단계: 이어서 진행하기
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    contentEl.innerHTML = `
+                        <div class="empty-state">
+                            <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                            <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-color);">아직 참여 중인 모임이 없습니다.</div>
+                            <div style="font-size: 0.9rem;">새로운 모임을 만들어 친구들을 초대해보세요!</div>
+                        </div>
+                    `;
+                }
+            }
+        }, 800);
+    }
+
+    function resumeMeeting() {
+        if(state.finalChoice) showScr('scr-final-confirmed');
+        else if(state.guests.length > 0) showScr('scr-status');
+        else showScr('scr-vote');
+    }
+
+    // 포매터
     function formatAmPmHour(hourStr) {
         if(!hourStr) return '';
         let hour = parseInt(hourStr, 10);
@@ -674,26 +766,55 @@
     window.onload = () => {
         initTheme(); 
         setupChips();
+        updateTexts();
+        initPartnerFormListener();
         checkUrlParams();
     };
-
     function saveState() { localStorage.setItem('w2m_state', JSON.stringify(state)); }
+    
+    function initPartnerFormListener() {
+        const partnerForm = document.getElementById('partnerForm');
+        if (partnerForm) {
+            partnerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = new FormData(partnerForm);
+                try {
+                    const response = await fetch(partnerForm.action, {
+                        method: 'POST', body: data, headers: { 'Accept': 'application/json' }
+                    });
+                    if (response.ok) {
+                        showToast(translations[currentLang].inquiry_success);
+                        partnerForm.reset();
+                        togglePartnerForm();
+                    } else { showToast(translations[currentLang].inquiry_error); }
+                } catch (error) { showToast(translations[currentLang].inquiry_error); }
+            });
+        }
+    }
+    function togglePartnerForm() {
+        const form = document.getElementById('partnerFormContainer');
+        if (!form) return;
+        const isShowing = form.style.display !== 'none';
+        form.style.display = isShowing ? 'none' : 'block';
+        if (!isShowing) form.scrollIntoView({ behavior: 'smooth' });
+    }
 
+    // [수정됨] URL 라우팅 체크 (로그인 유무 판별 포함)
     function checkUrlParams() {
-        // [수정됨] 로그인 모의 처리 (로컬 상태 연동)
-        const saved = localStorage.getItem('w2m_state');
         const isLoggedIn = localStorage.getItem('w2m_auth');
         
         if (!isLoggedIn) {
             showScr('scr-login');
             return;
         } else {
-            document.getElementById('logoutBtn').style.display = 'block';
+            const logoutBtn = document.getElementById('logoutBtn');
+            if(logoutBtn) logoutBtn.style.display = 'block';
         }
 
+        const saved = localStorage.getItem('w2m_state');
         if (saved) {
             state = JSON.parse(saved);
-            if (state.meeting.name) {
+            if (state.meeting && state.meeting.name) {
                 renderDash();
                 if (state.guests.length > 0) autoUpdateRecommendation();
             }
@@ -706,87 +827,32 @@
         else if (mode === 'final' && state.finalChoice) { renderFinalConfirmed(); showScr('scr-final-confirmed'); } 
         else if (mode === 'arrival') { renderFinalConfirmed(); showScr('scr-arrival'); }
         else if (mode === 'settle') { showScr('scr-settlement'); }
-        else { showScr('scr-dashboard'); } // 기본 진입은 대시보드
+        else { showScr('scr-dashboard'); } // 기본 랜딩은 대시보드
     }
-
-    /* =========================================================
-       [추가된 구역] 로그인 및 대시보드 로직 (Mock)
-       ========================================================= */
-    function simulateLogin() {
-        localStorage.setItem('w2m_auth', 'true');
-        document.getElementById('logoutBtn').style.display = 'block';
-        showScr('scr-dashboard');
-    }
-
-    function simulateLogout() {
-        localStorage.removeItem('w2m_auth');
-        document.getElementById('logoutBtn').style.display = 'none';
-        showScr('scr-login');
-    }
-
-    function loadDashboardData() {
-        document.getElementById('dashboardLoading').style.display = 'block';
-        document.getElementById('dashboardContent').style.display = 'none';
-
-        // 1.5초 로딩 시뮬레이션
-        setTimeout(() => {
-            document.getElementById('dashboardLoading').style.display = 'none';
-            document.getElementById('dashboardContent').style.display = 'block';
-            
-            const contentDiv = document.getElementById('dashboardContent');
-            
-            // 데이터가 있는 경우 (로컬 상태 확인)
-            if (state.meeting && state.meeting.name) {
-                contentDiv.innerHTML = `
-                    <div class="meeting-list-card" onclick="resumeMeeting()">
-                        <div style="font-weight: 800; font-size: 1.1rem; margin-bottom: 6px;">${state.meeting.name}</div>
-                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px;">📅 ${state.meeting.start || '날짜 미정'} ~ ${state.meeting.end || ''}</div>
-                        <div style="display: inline-block; font-size: 0.75rem; padding: 4px 8px; background: rgba(108, 92, 231, 0.1); border-radius: 12px; color: var(--primary); font-weight: bold;">
-                            최근 단계: 이어서 진행하기
-                        </div>
-                    </div>
-                `;
-            } else {
-                // Empty State
-                contentDiv.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
-                        <div style="font-weight: bold; margin-bottom: 5px; color: var(--text-color);">아직 참여 중인 모임이 없습니다.</div>
-                        <div style="font-size: 0.9rem;">새로운 모임을 만들어 친구들을 초대해보세요!</div>
-                    </div>
-                `;
-            }
-        }, 1000);
-    }
-
-    function resumeMeeting() {
-        if(state.finalChoice) showScr('scr-final-confirmed');
-        else if(state.guests.length > 0) showScr('scr-status');
-        else showScr('scr-vote');
-    }
-
-    /* --------------------------------------------------------- */
 
     function setupChips() {
         const rawMenus = ['한식', '일식', '중식', '양식', '고기/구이', '프렌치', '이탈리안', '이자카야', '태국/베트남식', '멕시칸', '해산물/회', '분식', '햄버거/피자', '닭발/곱창', '브런치', '디저트/카페', '와인바', '펍/포차'];
         const rawVibes = ['미슐랭', '뷰가 좋은', '파인다이닝', 'TV에 나온', '프라이빗 룸', '주차가 편한', '역세권', '조용한', '조명 맛집', '활기찬', '인스타감성', '트렌디한', '노포 감성', '콜키지 프리', '반려동물 동반', '고급스러운', '넓은 단체석'];
         rawMenus.sort((a,b) => a.localeCompare(b));
         rawVibes.sort((a,b) => a.localeCompare(b));
-        document.getElementById('menuChips').innerHTML = rawMenus.map(m => `<div class="pref-chip" onclick="this.classList.toggle('selected')">${m}</div>`).join('');
-        document.getElementById('vibeChips').innerHTML = rawVibes.map(v => `<div class="pref-chip" onclick="this.classList.toggle('selected')">${v}</div>`).join('');
+        const mc = document.getElementById('menuChips');
+        const vc = document.getElementById('vibeChips');
+        if(mc) mc.innerHTML = rawMenus.map(m => `<div class="pref-chip" onclick="this.classList.toggle('selected')">${m}</div>`).join('');
+        if(vc) vc.innerHTML = rawVibes.map(v => `<div class="pref-chip" onclick="this.classList.toggle('selected')">${v}</div>`).join('');
     }
 
+    let isDisqusLoaded = false;
     function showScr(id, isBack = false) {
         const cur = document.querySelector('.screen.active');
         if (!isBack && cur && cur.id !== id) state.history.push(cur.id);
         
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
         window.scrollTo({ top:0, behavior:'smooth' });
 
         const backBtn = document.getElementById('backBtn');
         if(backBtn) {
-            // 로그인, 대시보드, 홈 화면에서는 백버튼 숨김
             if (id === 'scr-login' || id === 'scr-dashboard' || id === 'scr-home') {
                 backBtn.style.display = 'none';
             } else {
@@ -796,7 +862,17 @@
         
         if(id === 'scr-login' || id === 'scr-dashboard') state.history = [];
 
-        if (id === 'scr-dashboard') loadDashboardData(); // 대시보드 로딩 트리거
+        if (id === 'scr-feedback' && !isDisqusLoaded) {
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://where2meet.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+            isDisqusLoaded = true;
+        }
+
+        if (id === 'scr-dashboard') loadDashboardData(); 
         if (id === 'scr-vote') restoreBaseVote();
         if (id === 'scr-status') autoUpdateRecommendation();
         if (id === 'scr-detail-vote') renderDetailVoteSetup();
@@ -811,7 +887,7 @@
         else showScr('scr-dashboard', true); 
     }
     function goHome() { showScr('scr-dashboard'); }
-    function showToast(msg) { const toast = document.getElementById('toast'); toast.innerText = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000); }
+    function showToast(msg) { const toast = document.getElementById('toast'); if(toast){toast.innerText = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000);} }
     function copyLink() { const url = new URL(window.location.href); url.searchParams.set('mode', 'join'); navigator.clipboard.writeText(url.toString()).then(() => showToast('🔗 모임 링크가 복사되었습니다!')); }
     function copyFinalLink() { 
         const url = new URL(window.location.href); 
@@ -819,7 +895,7 @@
         navigator.clipboard.writeText(url.toString()).then(() => showToast('🔗 실시간 도착 현황 링크가 복사되었습니다!')); 
     }
     function updateTooltipVal(v) { const t = document.getElementById('toolTipVal'); if(t) t.innerText=v; }
-    function togglePolicy(id) { const el = document.getElementById(`t-${id}`); el.classList.toggle('toggle-active'); const detail = document.getElementById(`detail-${id}`); if(detail) detail.classList.toggle('show', el.classList.contains('toggle-active')); }
+    function togglePolicy(id) { const el = document.getElementById(`t-${id}`); if(el) el.classList.toggle('toggle-active'); const detail = document.getElementById(`detail-${id}`); if(detail) detail.classList.toggle('show', el.classList.contains('toggle-active')); }
 
     function initMeeting() {
         const name = document.getElementById('mName').value;
@@ -830,11 +906,11 @@
         state.meeting = {
             name, start: s, end: e,
             deadline: document.getElementById('voteDeadline').value + ' ' + document.getElementById('voteDeadlineTime').value,
-            multi: document.getElementById('t-multi').classList.contains('toggle-active'),
-            penalty: document.getElementById('t-penalty').classList.contains('toggle-active'),
-            penAmt: document.getElementById('penAmt').value,
-            yield: document.getElementById('t-yield').classList.contains('toggle-active'),
-            yieldPct: document.getElementById('yieldPct').value,
+            multi: document.getElementById('t-multi') ? document.getElementById('t-multi').classList.contains('toggle-active') : true,
+            penalty: document.getElementById('t-penalty') ? document.getElementById('t-penalty').classList.contains('toggle-active') : false,
+            penAmt: document.getElementById('penAmt') ? document.getElementById('penAmt').value : 1000,
+            yield: document.getElementById('t-yield') ? document.getElementById('t-yield').classList.contains('toggle-active') : false,
+            yieldPct: document.getElementById('yieldPct') ? document.getElementById('yieldPct').value : 10,
             confirmedDate: '', confirmedLoc: '', optimalTimeStr: ''
         };
         state.meeting.noshow = document.getElementById('t-noshow') ? document.getElementById('t-noshow').classList.contains('toggle-active') : true;
@@ -860,12 +936,14 @@
         if(state.meeting.yield) pText += `🤝 양보 할인: <b>최대 ${state.meeting.yieldPct}%</b><br>`;
         
         if(state.meeting.deadline && state.meeting.deadline.trim().length > 5) { pText += `⏳ 투표 마감: <b>${state.meeting.deadline}</b>`; }
-        document.getElementById('policyInfo').innerHTML = pText;
+        const pInfo = document.getElementById('policyInfo');
+        if(pInfo) pInfo.innerHTML = pText;
         renderCalendar();
     }
 
     function renderCalendar() {
         const container = document.getElementById('calendarGrid');
+        if(!container) return;
         container.innerHTML = '';
         let cur = new Date(state.meeting.start);
         const end = new Date(state.meeting.end);
@@ -904,10 +982,10 @@
         if(!me) return;
         const g = state.guests.find(x => x.name === me);
         if(g) {
-            document.getElementById('gNameInput').value = g.name;
-            document.getElementById('gLocInput').value = g.loc;
-            document.getElementById('gReturnInput').value = g.ret || '';
-            document.getElementById('gTransportInput').value = g.transport || 'public';
+            const nameEl = document.getElementById('gNameInput'); if(nameEl) nameEl.value = g.name;
+            const locEl = document.getElementById('gLocInput'); if(locEl) locEl.value = g.loc;
+            const retEl = document.getElementById('gReturnInput'); if(retEl) retEl.value = g.ret || '';
+            const transEl = document.getElementById('gTransportInput'); if(transEl) transEl.value = g.transport || 'public';
             document.querySelectorAll('.date-cell').forEach(c => {
                 if(g.dates?.includes(c.getAttribute('data-date'))) c.classList.add('selected');
                 else c.classList.remove('selected');
@@ -948,12 +1026,14 @@
         state.guests.forEach(g => g.dates?.forEach(d => vMap[d] = (vMap[d]||0)+1));
         const ranks = Object.entries(vMap).sort((a,b) => b[1]-a[1]);
         const rList = document.getElementById('rankingList');
-        rList.innerHTML = ranks.slice(0,3).map((r,i) => `
-            <div class="rank-item ${i===0?'first':''}">
-                <div><span style="font-size:1.2rem; margin-right:8px;">${i===0?'🥇':i===1?'🥈':'🥉'}</span> <b style="color:var(--text-color);">${r[0].substring(5).replace('-','/')}</b></div>
-                <div class="rank-count">${r[1]}명</div>
-            </div>
-        `).join('');
+        if(rList) {
+            rList.innerHTML = ranks.slice(0,3).map((r,i) => `
+                <div class="rank-item ${i===0?'first':''}">
+                    <div><span style="font-size:1.2rem; margin-right:8px;">${i===0?'🥇':i===1?'🥈':'🥉'}</span> <b style="color:var(--text-color);">${r[0].substring(5).replace('-','/')}</b></div>
+                    <div class="rank-count">${r[1]}명</div>
+                </div>
+            `).join('');
+        }
         if (ranks.length > 0) { document.getElementById('detailVoteAction').style.display = 'block'; state.meeting.confirmedDate = ranks[0][0]; }
         if(state.guests.length === 0) return;
         document.getElementById('bestLocName').innerText = "분석 중...";
@@ -977,7 +1057,7 @@
             </div>
         `;
         const mc = document.getElementById('mapCard');
-        mc.classList.remove('flash-update'); void mc.offsetWidth; mc.classList.add('flash-update');
+        if(mc) { mc.classList.remove('flash-update'); void mc.offsetWidth; mc.classList.add('flash-update'); }
     }
     
     function startDetailVote() { showScr('scr-detail-vote'); }
@@ -997,8 +1077,8 @@
         if(me) {
             const g = state.guests.find(x => x.name === me);
             if(g && g.timeStart) {
-                document.getElementById('tTimeStart').value = g.timeStart;
-                document.getElementById('tTimeEnd').value = g.timeEnd;
+                const ts = document.getElementById('tTimeStart'); if(ts) ts.value = g.timeStart;
+                const te = document.getElementById('tTimeEnd'); if(te) te.value = g.timeEnd;
                 document.querySelectorAll('#menuChips .pref-chip').forEach(c => c.classList.remove('selected'));
                 document.querySelectorAll('#menuChips .pref-chip').forEach(c => {
                     if((g.menus||[]).includes(c.innerText)) c.classList.add('selected');
@@ -1352,7 +1432,8 @@
             total += rAmt;
             renderRoundList(r, rPer);
         }
-        document.getElementById('settleTotal').innerText = total.toLocaleString() + '원';
+        const st = document.getElementById('settleTotal');
+        if(st) st.innerText = total.toLocaleString() + '원';
     }
 
     function renderRoundList(roundNum, costPerPerson) {
